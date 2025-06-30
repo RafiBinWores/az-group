@@ -1,0 +1,20 @@
+.collapsed .label {
+  display: none !important;
+}
+
+.collapsed .item {
+  justify-content: center !important;
+}
+
+.collapsed .item svg {
+  margin-right: 0 !important;
+}
+
+.collapsed .logo-container {
+  justify-content: center !important;
+}
+
+.sidebar-transition {
+  transition: width 0.3s ease;
+}
+
