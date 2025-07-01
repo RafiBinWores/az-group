@@ -74,7 +74,7 @@
                 <!-- Profile Button -->
                 <button id="profileDropdownBtn" class="flex items-center gap-2 focus:outline-none cursor-pointer">
                     <img src="./assets/images/placeholder.png" alt="User"
-                        class="w-8 h-8 rounded-full ring-1 ring-blue-500" />
+                        class="w-8 h-8 rounded-full ring-1 ring-lime-800" />
                     <span class="font-semibold text-slate-800 hidden sm:inline">Rafi Bin Wores</span>
                 </button>
 
@@ -105,7 +105,7 @@
 
                     <!-- Footer -->
                     <div class="border-t border-t-gray-300">
-                        <a href="#" class="flex items-center px-4 py-3 text-sm hover:bg-gray-50 rounded-xl">
+                        <a href="{{ route('auth.logout') }}" class="flex items-center px-4 py-3 text-sm hover:bg-gray-50 rounded-xl">
                             <i class="fa-regular fa-arrow-right-from-bracket w-5 mr-2 text-gray-400"></i> <span
                                 class="font-ibm text-[15px]">Logout</span>
                         </a>
