@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\RoleController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -35,5 +36,16 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/logout', 'logout')->name('auth.logout');
     });
 
-    // 
+    // Role routes
+    Route::controller(RoleController::class)->group(function () {
+        Route::get('/roles', 'index')->name('roles.index');
+        Route::get('/roles/create', 'create')->name('roles.create');
+        Route::post('/roles', 'store')->name('roles.store');
+        Route::get('/roles/{role}/edit', 'edit')->name('roles.edit');
+        Route::put('/roles/{role}', 'update')->name('roles.update');
+//         Route::put('/roles/{role}', function ($role) {
+//     return response()->json(['role_param' => $role]);
+// });
+        Route::delete('/roles/{role}', 'destroy')->name('roles.destroy');
+    });
 });

@@ -1,4 +1,4 @@
-    <div class="flex items-center justify-between">
+    <div class="flex items-center justify-between px-8 bg-white py-4 shadow lg:bg-transparent lg:shadow-none">
         <div class="flex items-center gap-4">
             <!-- hamburger icon (Mobile/Tablet/Medium) -->
             <button id="mobileSidebarOpen" class="text-xl text-gray-500 cursor-pointer hover:text-black lg:hidden">
@@ -8,12 +8,14 @@
             <button id="mainToggleSidebar" class="hidden text-xl text-gray-500 cursor-pointer hover:text-black lg:inline">
                 <i class="fa-regular fa-bars"></i>
             </button>
-            <h1 class="hidden text-2xl font-semibold md:block">Hi, Welcome Back!</h1>
+
+            {{-- page heder --}}
+            <h1 class="hidden text-2xl font-semibold md:block">{{ $header ?? 'Hi, Welcome Back!' }}</h1>
         </div>
         <!-- Top-bar end -->
 
         <div class="flex items-center gap-8">
-            <img src="./assets/images/bangladesh.png" alt="Bangladeshi Flag" class="h-10" />
+            <img src="{{ asset('assets/images/bangladesh.png') }}" alt="Bangladeshi Flag" class="h-10" />
 
             <!-- Search button -->
             <div class="relative">
@@ -73,7 +75,7 @@
             <div class="relative inline-block text-left">
                 <!-- Profile Button -->
                 <button id="profileDropdownBtn" class="flex items-center gap-2 focus:outline-none cursor-pointer">
-                    <img src="./assets/images/placeholder.png" alt="User"
+                    <img src="{{ asset('assets/images/placeholder.png') }}" alt="User"
                         class="w-8 h-8 rounded-full ring-1 ring-lime-800" />
                     <span class="font-semibold text-slate-800 hidden sm:inline">Rafi Bin Wores</span>
                 </button>
