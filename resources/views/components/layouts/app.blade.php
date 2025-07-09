@@ -4,6 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    {{-- <meta name="viewport" content="width=device-width" /> --}}
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ $title ?? 'AZ Group' }}</title>
     <link rel="shortcut icon" href="{{ asset('assets/images/favicon.png') }}" type="image/x-icon" />
@@ -13,6 +14,9 @@
 
     <!-- Font Awesome -->
     <link rel="stylesheet" href="{{ asset('assets/css/font-awesome.css') }}" />
+
+    {{-- DataTables --}}
+    <link rel="stylesheet" href="{{ asset('assets/js/libs/dataTables/dataTables.min.css') }}">
 
     <!-- Google Font  -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -49,11 +53,14 @@
         </main>
     </div>
 
+
+    {{-- jQuery --}}
+    <script src="{{ asset('assets/js/jquery-3.7.1.min.js') }}"></script>
+    {{-- DataTables JS --}}
+    <script src="{{ asset('assets/js/libs/dataTables/dataTables.min.js') }}"></script>
+
     {{-- Custom js --}}
     @stack('scripts')
-
-    {{-- Sidebar --}}
-    <script src="{{ asset('assets/js/components/sidebar.js') }}"></script>
 </body>
 
 </html>

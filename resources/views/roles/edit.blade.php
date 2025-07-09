@@ -65,7 +65,6 @@
     </div>
 
     @push('scripts')
-        <script src="{{ asset('assets/js/jquery-3.7.1.min.js') }}"></script>
         <script>
             $(function() {
                 $("form").on("submit", function(event) {

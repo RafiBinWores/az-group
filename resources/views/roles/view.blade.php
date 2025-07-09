@@ -3,12 +3,6 @@
     <x-slot name="title">Roles List | AZ Group</x-slot>
     {{-- Page title end --}}
 
-    {{-- Styles --}}
-    @push('styles')
-        {{-- DataTables CSS --}}
-        <link rel="stylesheet" href="{{ asset('assets/js/libs/dataTables/dataTables.min.css') }}">
-    @endpush
-
     {{-- Page header --}}
     <x-slot name="header">Role List</x-slot>
     {{-- Page header end --}}
@@ -61,10 +55,6 @@
 
     {{-- Page Scripts --}}
     @push('scripts')
-        {{-- jQuery --}}
-        <script src="{{ asset('assets/js/jquery-3.7.1.min.js') }}"></script>
-        {{-- DataTables JS --}}
-        <script src="{{ asset('assets/js/libs/dataTables/dataTables.min.js') }}"></script>
         <script>
             $(document).ready(function() {
                 let table = $("#roles-table").DataTable({

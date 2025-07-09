@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -43,9 +44,16 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/roles', 'store')->name('roles.store');
         Route::get('/roles/{role}/edit', 'edit')->name('roles.edit');
         Route::put('/roles/{role}', 'update')->name('roles.update');
-//         Route::put('/roles/{role}', function ($role) {
-//     return response()->json(['role_param' => $role]);
-// });
         Route::delete('/roles/{role}', 'destroy')->name('roles.destroy');
+    });
+
+    // User routes
+    Route::controller(UserController::class)->group(function () {
+        Route::get('/users', 'index')->name('users.index');
+        Route::get('/users/create', 'create')->name('users.create');
+        Route::post('/users', 'store')->name('users.store');
+        Route::get('/users/{user}/edit', 'edit')->name('users.edit');
+        Route::put('/users/{user}', 'update')->name('users.update');
+        Route::delete('/users/{user}', 'destroy')->name('users.destroy');
     });
 });
