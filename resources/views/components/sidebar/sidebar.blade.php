@@ -1,5 +1,5 @@
     <aside id="sidebar"
-        class="z-10 w-64 h-screen p-4 space-y-6 text-sm font-medium transition-all duration-300 bg-white shadow-sm sidebar-transition hidden lg:block">
+        class="fixed top-0 left-0 z-10 w-64 h-screen p-4 space-y-6 text-sm font-medium transition-all duration-300 bg-white shadow-sm sidebar-transition hidden lg:block">
         <!-- Logo -->
         <div class="flex items-center justify-between mb-6 logo-container">
             <a href="/" class="flex items-center gap-2 logo-container">
@@ -97,7 +97,7 @@
         <nav class="space-y-6">
             <div>
                 <p class="mb-1 text-xs font-semibold tracking-widest text-gray-400 label font-ibm">
-                    DASHBOARD
+                    MAIN
                 </p>
                 <a href="/"
                     class="flex items-center gap-3 px-2 py-2 mt-2 text-gray-900 bg-gray-100 rounded-md item hover:bg-gray-200">
@@ -108,7 +108,7 @@
 
             <div>
                 <p class="mb-1 text-xs font-semibold tracking-widest text-gray-400 label font-ibm">
-                    GENERALS
+                    OPERATIONS
                 </p>
 
                 <ul class="space-y-2">
@@ -124,7 +124,7 @@
             </div>
             <div>
                 <p class="mb-1 text-xs font-semibold tracking-widest text-gray-400 label font-ibm">
-                    ROLES & PERMISSIONS
+                    MANAGEMENT
                 </p>
 
                 <ul class="mt-3 space-y-1">
@@ -132,10 +132,18 @@
                         <a href="{{ route('roles.index') }}"
                             class="flex items-center gap-3 px-2 py-2 mt-2 duration-150 rounded-md group item {{ request()->routeIs('roles.index') ? 'bg-gray-100' : 'hover:bg-gray-100 hover:translate-x-2' }}">
                             <i
-                                class="text-gray-500 fa-regular fa-user-gear {{ request()->routeIs('roles.index') ? 'text-gray-700' : 'group-hover:text-gray-700' }}"></i>
+                                class="fa-regular fa-screen-users text-gray-500 {{ request()->routeIs('roles.index') ? 'text-gray-700' : 'group-hover:text-gray-700' }}"></i>
                             <span
-                                class="text-sm font-medium text-gray-500 {{ request()->routeIs('roles.index') ? 'text-gray-700' : 'group-hover:text-gray-700' }} label">Manage
-                                Roles</span>
+                                class="text-sm font-medium text-gray-500 {{ request()->routeIs('roles.index') ? 'text-gray-700' : 'group-hover:text-gray-700' }} label">Roles</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('users.index') }}"
+                            class="flex items-center gap-3 px-2 py-2 mt-2 duration-150 rounded-md group item {{ request()->routeIs('users.index') ? 'bg-gray-100' : 'hover:bg-gray-100 hover:translate-x-2' }}">
+                            <i
+                                class="fa-regular fa-users text-gray-500 {{ request()->routeIs('users.index') ? 'text-gray-700' : 'group-hover:text-gray-700' }}"></i>
+                            <span
+                                class="text-sm font-medium text-gray-500 {{ request()->routeIs('users.index') ? 'text-gray-700' : 'group-hover:text-gray-700' }} label">Users</span>
                         </a>
                     </li>
                 </ul>

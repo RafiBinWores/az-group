@@ -33,14 +33,14 @@
 
 </head>
 
-<body class="text-gray-700 bg-gray-50 font-montserrat">
+<body class="text-gray-700 bg-gray-50 font-montserrat overflow-x-hidden">
 
     <div class="flex">
         <!-- Sidebar (Desktop) -->
         <x-sidebar.sidebar />
 
         <!-- Main Content -->
-        <main class="flex-1 bg-slate-50">
+        <main id="mainContent" class="flex-1 bg-slate-50 lg:ml-64 transition-all duration-300">
             {{-- Top-bar --}}
             <x-topbar.topbar>
                 <x-slot name="header">{{ $header ?? '' }}</x-slot>

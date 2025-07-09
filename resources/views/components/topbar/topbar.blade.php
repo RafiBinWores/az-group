@@ -70,7 +70,6 @@
                 </div> -->
             </div>
 
-
             <!-- Profile button -->
             <div class="relative inline-block text-left">
                 <!-- Profile Button -->
