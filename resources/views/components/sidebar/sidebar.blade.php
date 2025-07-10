@@ -56,6 +56,15 @@
 
                 <ul class="mt-3 space-y-1">
                     <li>
+                        <a href="{{ route('orders.index') }}"
+                            class="flex items-center gap-3 px-2 py-2 mt-2 duration-150 rounded-md group item {{ request()->routeIs('orders.index') ? 'bg-gray-100' : 'hover:bg-gray-100 hover:translate-x-2' }}">
+                            <i
+                                class="fa-regular fa-cart-flatbed text-gray-500 {{ request()->routeIs('orders.index') ? 'text-gray-700' : 'group-hover:text-gray-700' }}"></i>
+                            <span
+                                class="text-sm font-medium text-gray-500 {{ request()->routeIs('orders.index') ? 'text-gray-700' : 'group-hover:text-gray-700' }} label">Orders</span>
+                        </a>
+                    </li>
+                    <li>
                         <a href="{{ route('roles.index') }}"
                             class="flex items-center gap-3 px-2 py-2 mt-2 duration-150 rounded-md group item {{ request()->routeIs('roles.index') ? 'bg-gray-100' : 'hover:bg-gray-100 hover:translate-x-2' }}">
                             <i

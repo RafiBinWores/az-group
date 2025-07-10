@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -55,5 +56,15 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/users/{user}/edit', 'edit')->name('users.edit');
         Route::put('/users/{user}', 'update')->name('users.update');
         Route::delete('/users/{user}', 'destroy')->name('users.destroy');
+    });
+
+    // Order routes
+    Route::controller(OrderController::class)->group(function () {
+        Route::get('/orders', 'index')->name('orders.index');
+        Route::get('/orders/create', 'create')->name('orders.create');
+        Route::post('/orders', 'store')->name('orders.store');
+        Route::get('/orders/{order}/edit', 'edit')->name('orders.edit');
+        Route::put('/orders/{order}', 'update')->name('orders.update');
+        Route::delete('/orders/{order}', 'destroy')->name('orders.destroy');
     });
 });
