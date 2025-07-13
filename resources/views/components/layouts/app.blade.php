@@ -13,10 +13,15 @@
     <link rel="stylesheet" href="{{ asset('assets/css/styles.css') }}" />
 
     <!-- Font Awesome -->
-    <link rel="stylesheet" href="{{ asset('assets/css/font-awesome.css') }}" />
+    <link rel="stylesheet" href="{{ asset('assets/v6/css/all.css') }}" />
 
     {{-- DataTables --}}
     <link rel="stylesheet" href="{{ asset('assets/js/libs/dataTables/dataTables.min.css') }}">
+
+    {{-- Flat Icon --}}
+    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/3.0.0/uicons-regular-rounded/css/uicons-regular-rounded.css'>
+
+    <script src="./node_modules/preline/dist/preline.js"></script>
 
     <!-- Google Font  -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -58,6 +63,8 @@
     <script src="{{ asset('assets/js/jquery-3.7.1.min.js') }}"></script>
     {{-- DataTables JS --}}
     <script src="{{ asset('assets/js/libs/dataTables/dataTables.min.js') }}"></script>
+
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
     {{-- Custom js --}}
     @stack('scripts')

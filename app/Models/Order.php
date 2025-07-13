@@ -9,7 +9,7 @@ class Order extends Model
 {
     use SoftDeletes;
 
-    protected $fillable =[
+    protected $fillable = [
         'user_id',
         'buyer_name',
         'style_no',
@@ -17,4 +17,10 @@ class Order extends Model
     ];
 
     protected $dates = ['deleted_at'];
+
+    // Order Has many cutting report
+    public function cuttings()
+    {
+        return $this->hasMany(Cutting::class);
+    }
 }

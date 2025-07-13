@@ -1,0 +1,134 @@
+<x-layouts.app>
+    {{-- Page title --}}
+    <x-slot name="title">Cutting List | AZ Group</x-slot>
+    {{-- Page title end --}}
+
+    {{-- Page header --}}
+    <x-slot name="header">Cutting List</x-slot>
+    {{-- Page header end --}}
+
+    {{-- Models --}}
+    <x-notification.notification-toast />
+    <x-modals.delete-confirm />
+
+    {{-- Page Content --}}
+    <div class="bg-white shadow-sm font-ibm p-8 w-full rounded-lg mt-4 overflow-x-auto">
+
+        <div class="p-6 bg-white rounded-lg overflow-x-auto">
+            <table id="cutting-table" class="min-w-full divide-y text-sm">
+                <thead>
+                    <tr>
+                        <th class="px-4 py-3 text-left font-semibold text-gray-700">ID</th>
+                        <th class="px-4 py-3 text-left font-semibold text-gray-700">Style No</th>
+                        <th class="px-4 py-3 text-left font-semibold text-gray-700">Total Cutting</th>
+                        <th class="px-4 py-3 text-left font-semibold text-gray-700">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($cuttings as $cutting)
+                        @php
+                            $totalQty = collect($cutting->cutting)->sum('qty');
+                        @endphp
+
+                        <tr class="border-b-gray-400" data-order-id="{{ $cutting->id }}">
+                            <td class="px-4 py-2">{{ $cutting->id }}</td>
+                            <td class="px-4 py-2">{{ $cutting->order->style_no ?? 'N/A' }}</td>
+                            <td class="px-4 py-2 font-bold text-green-600">{{ $totalQty }}</td>
+                            <td class="px-4 py-2 flex gap-5 items-center">
+                                <a class="text-blue-500 rounded-full" href="{{ route('cutting.export', $cutting->id) }}"><i class="fa-regular fa-file-xls"></i></a>
+                                <a class="text-yellow-500 rounded-full" href="{{ route('cutting.show', $cutting->id) }}"><i
+                                        class="fa-regular fa-eye"></i></a>
+                                <a class="text-green-600" href="{{ route('cutting.edit', $cutting->id) }}"><i
+                                        class="fa-regular fa-pen"></i></a>
+
+                                <button class="delete-cutting-btn text-red-500 hover:text-red-700 cursor-pointer"
+                                    data-id="{{ $cutting->id }}" title="Delete"><i
+                                        class="fa-regular fa-trash"></i></button>
+
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    {{-- Page Scripts --}}
+    @push('scripts')
+        <script>
+            $(document).ready(function() {
+                let table = $("#cutting-table").DataTable({
+                    responsive: true,
+                    scrollX: true,
+                    language: {
+                        search: "_INPUT_",
+                        searchPlaceholder: "Search report...",
+                    },
+                });
+                setTimeout(function() {
+                    // Add New Role button beside search input
+                    let searchWrapper = $("#cutting-table_filter");
+                    searchWrapper.find(".add-new-role-btn").remove();
+                    let addBtn = $(`
+                        <a href="{{ route('cutting.create') }}"
+                            class="add-new-role-btn">
+                            <i class="fa fa-plus mr-2"></i> Add New Report
+                        </a>
+                    `);
+                    searchWrapper.append(addBtn);
+                    // On mobile: vertical (col) and centered, on lg+ horizontal (row)
+                    searchWrapper.removeClass("flex-col flex-row items-stretch items-center justify-center");
+                    searchWrapper.addClass(
+                        "flex flex-col gap-2 items-stretch justify-center items-center lg:flex-row lg:items-center lg:justify-start"
+                    );
+                }, 200);
+
+                // Delete cutting with custom modal
+                $(document).on("click", ".delete-cutting-btn", function(e) {
+                    e.preventDefault();
+                    let btn = $(this);
+                    let userId = btn.data("id");
+                    window.showDeleteModal({
+                        id: userId,
+                        message: "Do you really want to delete this user? This process cannot be undone.",
+                        onConfirm: function(id) {
+                            let btn = $(`button.delete-cutting-btn[data-id='${id}']`);
+                            $.ajax({
+                                url: "/cutting-report/" + id,
+                                type: "POST",
+                                data: {
+                                    _method: "DELETE",
+                                    _token: $('meta[name="csrf-token"]').attr("content"),
+                                },
+                                success: function(response) {
+                                    if (response.status) {
+                                        showToast(
+                                            "success",
+                                            response.message ||
+                                            "Cutting report deleted successfully"
+                                        );
+                                        // Remove row from table
+                                        let row = btn.closest("tr");
+                                        table.row(row).remove().draw();
+                                    } else {
+                                        showToast(
+                                            "error",
+                                            response.message ||
+                                            "Could not delete order."
+                                        );
+                                    }
+                                },
+                                error: function() {
+                                    showToast(
+                                        "error",
+                                        "Something went wrong. Please try again."
+                                    );
+                                },
+                            });
+                        },
+                    });
+                });
+            });
+        </script>
+    @endpush
+</x-layouts.app>

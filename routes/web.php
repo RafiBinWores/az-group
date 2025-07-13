@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\ResetPasswordController;
+use App\Http\Controllers\CuttingController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\RoleController;
@@ -67,4 +68,17 @@ Route::middleware(['auth'])->group(function () {
         Route::put('/orders/{order}', 'update')->name('orders.update');
         Route::delete('/orders/{order}', 'destroy')->name('orders.destroy');
     });
+
+    // Cutting routes
+    Route::controller(CuttingController::class)->group(function () {
+        Route::get('/cutting-report', 'index')->name('cutting.index');
+        Route::get('/cutting-report/create', 'create')->name('cutting.create');
+        Route::post('/cutting-report', 'store')->name('cutting.store');
+        Route::get('/cutting-report/{cutting}/show', 'show')->name('cutting.show');
+        Route::get('/cutting-report/{cutting}/edit', 'edit')->name('cutting.edit');
+        Route::put('/cutting-report/{cutting}', 'update')->name('cutting.update');
+        Route::delete('/cutting-report/{cutting}', 'destroy')->name('cutting.destroy');
+        Route::get('/cutting-report/{cutting}/export', 'export')->name('cutting.export');
+    });
+
 });
