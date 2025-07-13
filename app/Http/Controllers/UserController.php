@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Spatie\Permission\Models\Role;
@@ -115,7 +116,6 @@ class UserController extends Controller
             'avatar' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
         ]);
 
-        // error messages
         if ($validator->fails()) {
             return response()->json([
                 'status' => false,
@@ -123,7 +123,28 @@ class UserController extends Controller
             ]);
         }
 
+        // Check what changed
+        $nameChanged = $user->name !== $request->name;
+        $emailChanged = $user->email !== $request->email;
+        $roleChanged = !$user->roles->contains('name', $request->role);
+        $passwordChanged = $request->filled('password') && !Hash::check($request->password, $user->password);
+        $avatarChanged = $request->hasFile('avatar');
+
+        if (
+            !$nameChanged &&
+            !$emailChanged &&
+            !$roleChanged &&
+            !$passwordChanged &&
+            !$avatarChanged
+        ) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Nothing to update.',
+            ]);
+        }
+
         // Handle avatar upload
+        $avatarPath = null;
         if ($request->hasFile('avatar')) {
             // Delete old avatar if exists
             if ($user->avatar && file_exists(public_path('storage/' . $user->avatar))) {
@@ -139,13 +160,20 @@ class UserController extends Controller
             $avatarPath = $file->storeAs('avatar', $customName, 'public');
         }
 
-        // Create user
-        $user->update([
+        // Only update fields that were changed
+        $updateData = [
             'name' => $request->name,
             'email' => $request->email,
-            'password' => bcrypt($request->password),
-            'avatar' => $avatarPath,
-        ]);
+        ];
+
+        if ($request->filled('password')) {
+            $updateData['password'] = bcrypt($request->password);
+        }
+        if ($avatarPath) {
+            $updateData['avatar'] = $avatarPath;
+        }
+
+        $user->update($updateData);
 
         // Assign role
         if ($request->role) {
@@ -154,9 +182,10 @@ class UserController extends Controller
 
         return response()->json([
             'status' => true,
-            'message' => 'User update successfully.',
+            'message' => 'User updated successfully.',
         ]);
     }
+
 
     /**
      * Remove the specified resource from storage.
