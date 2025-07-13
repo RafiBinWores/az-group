@@ -37,7 +37,7 @@ class OrderController extends Controller
         $validator = Validator::make($request->all(), [
             'user_id' => 'required|numeric',
             'buyer_name' => 'required|string',
-            'style_no' => 'required|string',
+            'style_no' => 'required|string|unique:orders,style_no',
             'order_quantity' => 'required|numeric',
         ]);
 
@@ -101,6 +101,19 @@ class OrderController extends Controller
             return response()->json([
                 'status' => false,
                 'errors' => $validator->errors(),
+            ]);
+        }
+
+        // Check if anything has actually changed
+        $userChanged = $order->user_id != $request->user_id;
+        $buyerChanged = $order->buyer_name !== $request->buyer_name;
+        $styleChanged = $order->style_no !== $request->style_no;
+        $qtyChanged = $order->order_qty != $request->order_quantity;
+
+        if (!$userChanged && !$buyerChanged && !$styleChanged && !$qtyChanged) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Nothing to update.',
             ]);
         }
 
