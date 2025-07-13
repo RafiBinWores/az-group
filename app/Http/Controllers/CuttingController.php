@@ -42,7 +42,7 @@ class CuttingController extends Controller
             'cutting' => 'required|array|min:1',
             'cutting.*.color' => 'required|string',
             'cutting.*.qty' => 'required',
-        ],[
+        ], [
             'order_id.required' => 'The style no is required.',
         ]);
 
@@ -100,7 +100,7 @@ class CuttingController extends Controller
             'cutting' => 'required|array|min:1',
             'cutting.*.color' => 'required|string',
             'cutting.*.qty' => 'required',
-        ],[
+        ], [
             'order_id.required' => 'The style no is required.',
         ]);
 
@@ -109,6 +109,17 @@ class CuttingController extends Controller
             return response()->json([
                 'status' => false,
                 'errors' => $validator->errors(),
+            ]);
+        }
+
+        // Compare the order_id and the cutting array directly
+        $orderChanged = $cutting->order_id != $request->order_id;
+        $cuttingChanged = $cutting->cutting != $request->cutting;
+
+        if (!$orderChanged && !$cuttingChanged) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Nothing to update.',
             ]);
         }
 

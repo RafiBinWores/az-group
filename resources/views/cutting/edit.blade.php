@@ -149,11 +149,14 @@
                             if (response.status) {
                                 showToast(
                                     "success",
-                                    response.message || "User created successfully"
+                                    response.message || "Cutting report updated successfully"
                                 );
                                 // Optionally redirect after success:
                                 // setTimeout(function() { window.location.href = "{{ route('users.index') }}"; }, 1200);
                             } else {
+                                if (response.message) {
+                                    showToast("warning", response.message);
+                                }
                                 let errors = response.errors || {};
 
                                 // Clear previous errors

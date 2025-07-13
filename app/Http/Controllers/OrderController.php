@@ -92,7 +92,7 @@ class OrderController extends Controller
         $validator = Validator::make($request->all(), [
             'user_id' => 'required|numeric',
             'buyer_name' => 'required|string',
-            'style_no' => 'required|string',
+            'style_no' => 'required|string|unique:orders,style_no,' . $order->style_no . ',style_no',
             'order_quantity' => 'required|numeric',
         ]);
 

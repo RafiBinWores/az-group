@@ -19,14 +19,6 @@
         <div class="p-6 font-ibm">
             <form action="{{ route('cutting.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
-
-                {{-- <div class="mb-4">
-                    <label for="style_no" class="font-semibold">Style No</label>
-                    <input type="text" name="style_no" id="style_no" placeholder="e.g. 1-KA-5123"
-                        class="w-full border mt-3 outline-[#99c041] border-gray-300 px-3 py-2 rounded-xl">
-                    <span class="error text-red-500 text-xs mt-1 block"></span>
-                </div> --}}
-
                 <div class="mb-4">
                     <label class="font-semibold">Style No</label>
                     <select name="order_id" id="style-select"
