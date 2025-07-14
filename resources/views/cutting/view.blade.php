@@ -77,9 +77,9 @@
                     `);
                     searchWrapper.append(addBtn);
                     // On mobile: vertical (col) and centered, on lg+ horizontal (row)
-                    searchWrapper.removeClass("flex-col flex-row items-stretch items-center justify-center");
+                    searchWrapper.removeClass("flex-col flex-row items-center justify-center");
                     searchWrapper.addClass(
-                        "flex flex-col gap-2 items-stretch justify-center items-center lg:flex-row lg:items-center lg:justify-start"
+                        "flex flex-col gap-2 items-center justify-center lg:flex-row lg:items-center lg:justify-start"
                     );
                 }, 200);
 
