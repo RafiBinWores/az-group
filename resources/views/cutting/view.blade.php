@@ -12,10 +12,10 @@
     <x-modals.delete-confirm />
 
     {{-- Page Content --}}
-    <div class="bg-white shadow-sm font-ibm p-8 w-full rounded-lg mt-4 overflow-x-auto">
+    <div class="bg-white shadow-sm font-ibm p-8 w-full rounded-lg mt-4">
 
-        <div class="p-6 bg-white rounded-lg overflow-x-auto">
-            <table id="cutting-table" class="min-w-full divide-y text-sm">
+        <div class="p-6 bg-white rounded-lg">
+            <table id="cutting-table" class="min-w-full divide-y text-sm overflow-x-scroll">
                 <thead>
                     <tr>
                         <th class="px-4 py-3 text-left font-semibold text-gray-700">ID</th>

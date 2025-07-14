@@ -19,10 +19,15 @@
                     <p class="text-sm">Date: <span class="font-normal">{{ $cutting->created_at->format('d-m-Y') }}
                         </span></p>
                 </div>
-                <a href="{{ route('cutting.export', $cutting->id) }}"
-                    class="inline-block px-4 py-2 bg-sky-500 rounded hover:bg-sky-700 duration-200">
-                    <i class="fa-regular fa-file-xls text-white"></i>
-                </a>
+                <div class="flex items-center gap-2">
+                    <a href="{{ route('cutting.export', $cutting->id) }}"
+                        class="inline-block px-4 py-2 bg-sky-500 rounded hover:bg-sky-700 duration-200">
+                        <i class="fa-regular fa-file-xls text-white"></i>
+                    </a>
+                    <a class="bg-green-500 px-4 py-2 rounded hover:bg-green-600 duration-200"
+                        href="{{ route('cutting.edit', $cutting->id) }}"><i
+                            class="fa-regular fa-pen text-white"></i></a>
+                </div>
             </div>
         </div>
 
@@ -41,6 +46,10 @@
                         </th>
                     </tr>
                 </thead>
+                @php
+                    $totalQty = collect($cutting->cutting)->sum('qty');
+                @endphp
+
                 <tbody>
                     @foreach ($cutting->cutting as $row)
                         <tr class="border-b border-gray-200">
@@ -52,6 +61,11 @@
                             </td>
                         </tr>
                     @endforeach
+                    {{-- Total Row --}}
+                    <tr class="font-bold">
+                        <td class="px-6 py-4 text-center">Total</td>
+                        <td class="px-6 py-4">{{ $totalQty }}</td>
+                    </tr>
                 </tbody>
             </table>
 

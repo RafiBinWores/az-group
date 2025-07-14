@@ -56,7 +56,7 @@ class CuttingExport implements FromCollection, WithHeadings, WithEvents, WithTit
             ['Daily Cutting Report'],
             [],
             ['', '', '', '', 'Date: ' . $date],
-            ['Serial No', 'Order Style No', 'Color', 'Quantity', 'Remarks'],
+            ['Serial No', 'Order Style No', 'Color', 'Cutting', 'Remarks'],
         ];
     }
 
