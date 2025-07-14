@@ -43,7 +43,7 @@ class CuttingController extends Controller
             'cutting.*.color' => 'required|string',
             'cutting.*.qty' => 'required',
         ], [
-            'order_id.required' => 'The style no is required.',
+            'order_id.required' => 'The style no field is required.',
         ]);
 
         // error messages
@@ -62,7 +62,7 @@ class CuttingController extends Controller
 
         return response()->json([
             'status' => true,
-            'message' => 'User added successfully.',
+            'message' => 'Cutting report added successfully.',
         ]);
     }
 
