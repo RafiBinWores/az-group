@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\CuttingController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\EmbroideryPrintController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
@@ -79,6 +80,18 @@ Route::middleware(['auth'])->group(function () {
         Route::put('/cutting-report/{cutting}', 'update')->name('cutting.update');
         Route::delete('/cutting-report/{cutting}', 'destroy')->name('cutting.destroy');
         Route::get('/cutting-report/{cutting}/export', 'export')->name('cutting.export');
+    });
+
+    // Embroidery Or Print routes
+    Route::controller(EmbroideryPrintController::class)->group(function () {
+        Route::get('/embroidery-prints', 'index')->name('embroidery_prints.index');
+        Route::get('/embroidery-prints/create', 'create')->name('embroidery_prints.create');
+        Route::post('/embroidery-prints', 'store')->name('embroidery_prints.store');
+        Route::get('/embroidery-prints/{embroidery_print}/show', 'show')->name('embroidery_prints.show');
+        Route::get('/embroidery-prints/{embroidery_print}/edit', 'edit')->name('embroidery_prints.edit');
+        Route::put('/embroidery-prints/{embroidery_print}', 'update')->name('embroidery_prints.update');
+        Route::delete('/embroidery-prints/{embroidery_print}', 'destroy')->name('embroidery_prints.destroy');
+        Route::get('/embroidery-prints/{embroidery_print}/export', 'export')->name('embroidery_prints.export');
     });
 
 });
