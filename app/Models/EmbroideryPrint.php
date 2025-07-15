@@ -12,6 +12,7 @@ class EmbroideryPrint extends Model
     protected $fillable = [
         'order_id',
         'emb_or_print',
+        'date',
     ];
 
     protected $casts = [

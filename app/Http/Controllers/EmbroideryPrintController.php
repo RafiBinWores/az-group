@@ -10,14 +10,14 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class EmbroideryPrintController extends Controller
 {
-        /**
+    /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        // $embroideryPrints = EmbroideryPrint::with('order')->get();
+        $embroideryPrints = EmbroideryPrint::with('order')->get();
 
-        return view('embroidery-print.view');
+        return view('embroidery-print.view', compact('embroideryPrints'));
     }
 
     /**
@@ -42,9 +42,19 @@ class EmbroideryPrintController extends Controller
             'embroidery_or_print.*.color' => 'required|string',
             'embroidery_or_print.*.send' => 'required',
             'embroidery_or_print.*.receive' => 'nullable',
+            'date' => 'required|date'
         ], [
             'order_id.required' => 'The style no field is required.',
         ]);
+
+        $validator->after(function ($validator) use ($request) {
+            $exists = EmbroideryPrint::where('order_id', $request->order_id)
+                ->where('date', $request->date)
+                ->exists();
+            if ($exists) {
+                $validator->errors()->add('date', 'A report for this style and date already exists.');
+            }
+        });
 
         // error messages
         if ($validator->fails()) {
@@ -58,6 +68,7 @@ class EmbroideryPrintController extends Controller
         EmbroideryPrint::create([
             'order_id' => $request->order_id,
             'emb_or_print' => $request->embroidery_or_print,
+            'date'=>$request->date,
         ]);
 
         return response()->json([

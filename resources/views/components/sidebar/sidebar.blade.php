@@ -89,6 +89,15 @@
                         </a>
                     </li>
                     <li>
+                        <a href="{{ route('garment_types.index') }}"
+                            class="flex items-center gap-3 px-2 py-2 mt-2 duration-150 rounded-md group item {{ request()->routeIs('garment_types.index') ? 'bg-gray-100' : 'hover:bg-gray-100 hover:translate-x-2' }}">
+                            <i
+                                class="fa-regular fa-shirt text-gray-500 {{ request()->routeIs('garment_types.index') ? 'text-gray-700' : 'group-hover:text-gray-700' }}"></i>
+                            <span
+                                class="text-sm font-medium text-gray-500 {{ request()->routeIs('garment_types.index') ? 'text-gray-700' : 'group-hover:text-gray-700' }} label">Garment Types</span>
+                        </a>
+                    </li>
+                    <li>
                         <a href="{{ route('roles.index') }}"
                             class="flex items-center gap-3 px-2 py-2 mt-2 duration-150 rounded-md group item {{ request()->routeIs('roles.index') ? 'bg-gray-100' : 'hover:bg-gray-100 hover:translate-x-2' }}">
                             <i

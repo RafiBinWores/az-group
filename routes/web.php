@@ -6,6 +6,7 @@ use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\CuttingController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EmbroideryPrintController;
+use App\Http\Controllers\GarmentTypeController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
@@ -94,4 +95,14 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/embroidery-prints/{embroidery_print}/export', 'export')->name('embroidery_prints.export');
     });
 
+    // Garments types routes
+    Route::controller(GarmentTypeController::class)->group(function () {
+        Route::get('/garment-types', 'index')->name('garment_types.index');
+        Route::get('/garment-types/create', 'create')->name('garment_types.create');
+        Route::post('/garment-types', 'store')->name('garment_types.store');
+         Route::post('/garment-types/update-status', 'updateStatus')->name('garment_types.updateStatus');
+        Route::get('/garment-types/{garment_type}/edit', 'edit')->name('garment_types.edit');
+        Route::put('/garment-types/{garment_type}', 'update')->name('garment_types.update');
+        Route::delete('/garment-types/{garment_type}', 'destroy')->name('garment_types.destroy');
+    });
 });

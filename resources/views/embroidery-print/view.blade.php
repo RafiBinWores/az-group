@@ -22,33 +22,42 @@
                         <th class="px-4 py-3 text-left font-semibold text-gray-700">Style No</th>
                         <th class="px-4 py-3 text-left font-semibold text-gray-700">Send</th>
                         <th class="px-4 py-3 text-left font-semibold text-gray-700">Receive</th>
+                        <th class="px-4 py-3 text-left font-semibold text-gray-700">Date</th>
                         <th class="px-4 py-3 text-left font-semibold text-gray-700">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {{-- @foreach ($cuttings as $cutting)
+                    @foreach ($embroideryPrints as $embroideryPrint)
                         @php
-                            $totalQty = collect($cutting->cutting)->sum('qty');
-                        @endphp
+                            $totalSend = collect($embroideryPrint->emb_or_print ?? [])->sum('send');
+                            $totalReceive = collect($embroideryPrint->emb_or_print ?? [])->sum('receive');
 
-                        <tr class="border-b-gray-400" data-order-id="{{ $cutting->id }}">
-                            <td class="px-4 py-2">{{ $cutting->id }}</td>
-                            <td class="px-4 py-2">{{ $cutting->order->style_no ?? 'N/A' }}</td>
-                            <td class="px-4 py-2 font-bold text-green-600">{{ $totalQty }}</td>
+                        @endphp
+                        <tr class="border-b-gray-400" data-order-id="{{ $embroideryPrint->id }}">
+                            <td class="px-4 py-2">{{ $embroideryPrint->id }}</td>
+                            <td class="px-4 py-2">{{ $embroideryPrint->order->style_no ?? 'N/A' }}</td>
+                            <td class="px-4 py-2 font-bold text-green-600">{{ $totalSend }}</td>
+                            <td class="px-4 py-2 font-bold text-green-600">{{ $totalReceive }}</td>
+                            <td class="px-4 py-2">{{ \Carbon\Carbon::parse($embroideryPrint->date)->format('M d, Y') }}
                             <td class="px-4 py-2 flex gap-5 items-center">
-                                <a class="text-blue-500 rounded-full" href="{{ route('cutting.export', $cutting->id) }}"><i class="fa-regular fa-file-xls"></i></a>
-                                <a class="text-yellow-500 rounded-full" href="{{ route('cutting.show', $cutting->id) }}"><i
+                                <a class="text-blue-500 rounded-full"
+                                    href="{{ route('embroidery_prints.export', $embroideryPrint->id) }}"><i
+                                        class="fa-regular fa-file-xls"></i></a>
+                                <a class="text-yellow-500 rounded-full"
+                                    href="{{ route('embroidery_prints.show', $embroideryPrint->id) }}"><i
                                         class="fa-regular fa-eye"></i></a>
-                                <a class="text-green-600" href="{{ route('cutting.edit', $cutting->id) }}"><i
+                                <a class="text-green-600"
+                                    href="{{ route('embroidery_prints.edit', $embroideryPrint->id) }}"><i
                                         class="fa-regular fa-pen"></i></a>
 
-                                <button class="delete-cutting-btn text-red-500 hover:text-red-700 cursor-pointer"
-                                    data-id="{{ $cutting->id }}" title="Delete"><i
+                                <button
+                                    class="delete-embroidery-print-btn text-red-500 hover:text-red-700 cursor-pointer"
+                                    data-id="{{ $embroideryPrint->id }}" title="Delete"><i
                                         class="fa-regular fa-trash"></i></button>
 
                             </td>
                         </tr>
-                    @endforeach --}}
+                    @endforeach
                 </tbody>
             </table>
         </div>

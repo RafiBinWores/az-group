@@ -11,12 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('embroidery_prints', function (Blueprint $table) {
+        Schema::create('garment_types', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('order_id')->constrained()->onDelete('cascade');
-            $table->json('emb_or_print');
-            $table->date('date');
-            $table->softDeletes();
+            $table->string('name');
+            $table->boolean('status')->default(1);
             $table->timestamps();
         });
     }
@@ -26,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('embroidery_prints');
+        Schema::dropIfExists('garment_types');
     }
 };
