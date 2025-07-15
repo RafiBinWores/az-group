@@ -43,18 +43,20 @@
                 </div>
                 <div class="mb-4">
                     <label class="font-semibold">Date</label>
-                    <input type="date" name="date" id="date" class="w-full border mt-3 outline-[#99c041] border-gray-300 px-3 py-2 rounded-xl focus:ring-[#99c041] focus:border-[#99c041] transition">
+                    <input type="date" name="date" id="date"
+                        class="w-full border mt-3 outline-[#99c041] border-gray-300 px-3 py-2 rounded-xl focus:ring-[#99c041] focus:border-[#99c041] transition">
                     <span class="error text-red-500 text-xs mt-1 block"></span>
                 </div>
 
-                <div id="cutting-fields" class="space-y-2 mb-4">
-                    <label for="style_no" class="font-semibold">Embroidery or Print</label>
+                <div id="add-fields" class="space-y-2 mb-4">
+                    <label class="font-semibold">Embroidery or Print</label>
                     <div class="flex gap-2 items-center">
                         <input type="text" name="embroidery_or_print[0][color]" placeholder="Color"
                             class="border border-gray-300 outline-[#99c041] rounded-xl px-3 py-2 w-2/3" />
                         <input type="number" min="0" name="embroidery_or_print[0][send]" placeholder="Send"
                             class="border border-gray-300 outline-[#99c041] rounded-xl px-3 py-2 w-1/3" />
-                        <input type="number" min="0" name="embroidery_or_print[0][receive]" placeholder="Receive"
+                        <input type="number" min="0" name="embroidery_or_print[0][receive]"
+                            placeholder="Receive"
                             class="border border-gray-300 outline-[#99c041] rounded-xl px-3 py-2 w-1/3" />
                         <button type="button"
                             class="remove-row bg-red-500 text-white rounded-xl size-10 px-2 py-1 ml-2 hidden">
@@ -63,14 +65,15 @@
                     </div>
                     <span class="error text-red-500 text-xs mt-1 block"></span>
                 </div>
-                <button type="button" id="add-cutting-row"
+                <button type="button" id="add-row"
                     class="mt-2 bg-blue-600 text-white px-4 py-2 rounded-xl shadow cursor-pointer">
                     + Add
                 </button>
 
+
                 <!-- Buttons -->
                 <div class="flex items-center gap-4 mt-5">
-                    <a href="{{ route('cutting.index') }}"
+                    <a href="{{ route('embroidery_prints.index') }}"
                         class="bg-red-400 cursor-pointer hover:bg-red-500 text-white px-4 py-2 rounded-xl">
                         <i class="fa-regular fa-xmark pe-1"></i> Cancel
                     </a>
@@ -87,46 +90,47 @@
 
     @push('scripts')
         <script>
-            // for add multiple color based quantity under one order
-            let cuttingIndex = 1;
-            document.getElementById('add-cutting-row').addEventListener('click', function() {
-                const fields = document.getElementById('cutting-fields');
+            let embroideryIndex = 1; // Because initial is 0
+
+            document.getElementById('add-row').addEventListener('click', function() {
+                const fields = document.getElementById('add-fields');
                 const div = document.createElement('div');
                 div.className = 'flex gap-2 items-center';
 
                 div.innerHTML = `
-        <input type="text" name="cutting[${cuttingIndex}][color]" placeholder="Color"
-            class="border border-gray-300 rounded-xl px-3 py-2 w-2/3 focus:outline-none focus:ring-2 focus:ring-blue-300" />
-        <input type="number" min="0" name="cutting[${cuttingIndex}][qty]" placeholder="Quantity"
-            class="border border-gray-300 rounded-xl px-3 py-2 w-1/3 focus:outline-none focus:ring-2 focus:ring-blue-300" />
+        <input type="text" name="embroidery_or_print[${embroideryIndex}][color]" placeholder="Color"
+            class="border border-gray-300 outline-[#99c041] rounded-xl px-3 py-2 w-2/3" />
+        <input type="number" min="0" name="embroidery_or_print[${embroideryIndex}][send]" placeholder="Send"
+            class="border border-gray-300 outline-[#99c041] rounded-xl px-3 py-2 w-1/3" />
+        <input type="number" min="0" name="embroidery_or_print[${embroideryIndex}][receive]" placeholder="Receive"
+            class="border border-gray-300 outline-[#99c041] rounded-xl px-3 py-2 w-1/3" />
         <button type="button" class="remove-row bg-red-500 text-white rounded-xl px-2 py-1 ml-2 size-10 cursor-pointer">
             &times;
         </button>
     `;
                 fields.appendChild(div);
-                cuttingIndex++;
+                embroideryIndex++;
                 updateRemoveButtons();
             });
 
-            // Remove row functionality
-            document.getElementById('cutting-fields').addEventListener('click', function(e) {
+            document.getElementById('add-fields').addEventListener('click', function(e) {
                 if (e.target.classList.contains('remove-row')) {
                     e.target.parentNode.remove();
                     updateRemoveButtons();
                 }
             });
 
-            // Hide remove button if only 1 row left
             function updateRemoveButtons() {
-                const rows = document.querySelectorAll('#cutting-fields .flex');
+                const rows = document.querySelectorAll('#add-fields .flex');
                 rows.forEach((row, idx) => {
                     const btn = row.querySelector('.remove-row');
                     btn.classList.toggle('hidden', rows.length === 1);
                 });
             }
 
-            // Initialize remove button visibility on page load
+            // Initialize on page load
             updateRemoveButtons();
+
 
             // FOr submit the form
             $(function() {

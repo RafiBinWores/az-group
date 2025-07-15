@@ -1,10 +1,10 @@
 <x-layouts.app>
     {{-- Page title --}}
-    <x-slot name="title">Edit cutting | AZ Group</x-slot>
+    <x-slot name="title">Edit Embroidery or Print | AZ Group</x-slot>
     {{-- Page title end --}}
 
     {{-- Page header --}}
-    <x-slot name="header">Edit cutting</x-slot>
+    <x-slot name="header">Edit Embroidery or Print</x-slot>
     {{-- Page header end --}}
 
     {{-- Notifications --}}
@@ -13,11 +13,11 @@
     {{-- Page Content --}}
     <div class="bg-white shadow-sm w-full rounded-lg mt-4">
         <div class="px-6 py-4 border-b border-gray-200 text-gray-700 font-semibold text-lg">
-            Cutting Information
+            Basic Information
         </div>
 
         <div class="p-6 font-ibm">
-            <form id="form" action="{{ route('cutting.update', $cutting->id) }}" method="POST" enctype="multipart/form-data">
+            <form action="{{ route('embroidery_prints.update', $embroideryPrint->id) }}" method="POST">
                 @csrf
                 @method('PUT')
 
@@ -27,26 +27,42 @@
                         class="w-full border mt-3 outline-[#99c041] border-gray-300 px-3 py-2 rounded-xl focus:ring-[#99c041] focus:border-[#99c041] transition">
                         <option value="" class="text-gray-300">Select a style</option>
                         @foreach ($orders as $order)
-                            <option value="{{ $order->id }}" {{ $order->id == $cutting->order_id ? 'selected' : '' }}>
-                                {{ $order->style_no }}
-                            </option>
+                            <option value="{{ $order->id }}" {{ $embroideryPrint->order_id == $order->id ? 'selected' : '' }}>{{ $order->style_no }}</option>
                         @endforeach
                     </select>
                     <span class="error text-red-500 text-xs mt-1 block"></span>
                 </div>
+                <div class="mb-4">
+                    <label class="font-semibold">Garment Type</label>
+                    <select name="garment_type" id="garment_type"
+                        class="w-full border mt-3 outline-[#99c041] border-gray-300 px-3 py-2 rounded-xl focus:ring-[#99c041] focus:border-[#99c041] transition">
+                        <option value="" class="text-gray-300">Select...</option>
+                        @foreach ($types as $type)
+                            <option value="{{ $type->name }}" {{ $embroideryPrint->garment_type == $type->name ? 'selected' : '' }}>{{ $type->name }}</option>
+                        @endforeach
+                    </select>
+                    <span class="error text-red-500 text-xs mt-1 block"></span>
+                </div>
+                <div class="mb-4">
+                    <label class="font-semibold">Date</label>
+                    <input type="date" name="date" value="{{ $embroideryPrint->date }}" id="date" class="w-full border mt-3 outline-[#99c041] border-gray-300 px-3 py-2 rounded-xl focus:ring-[#99c041] focus:border-[#99c041] transition">
+                    <span class="error text-red-500 text-xs mt-1 block"></span>
+                </div>
 
-                {{-- Cutting Report --}}
-                <div id="cutting-fields" class="space-y-2 mb-4">
-                    <label for="style_no" class="font-semibold">Cutting</label>
+                <div id="add-fields" class="space-y-2 mb-4">
+                    <label for="style_no" class="font-semibold">Embroidery or Print</label>
                     @php $index = 0; @endphp
-                    @foreach ($cutting->cutting as $row)
+                    @foreach ($embroideryPrint->emb_or_print as $row)
                     <div class="mb-4">
                         <div class="flex gap-2 items-center">
-                            <input type="text" name="cutting[{{ $index }}][color]" value="{{ $row['color'] }}"
+                            <input type="text" name="embroidery_or_print[{{ $index }}][color]" value="{{ $row['color'] }}"
                                 placeholder="Color"
                                 class="border border-gray-300 outline-[#99c041] rounded-xl px-3 py-2 w-2/3" />
-                            <input type="number" min="0" name="cutting[{{ $index }}][qty]" value="{{ $row['qty'] }}"
-                                placeholder="Quantity"
+                            <input type="number" min="0" name="embroidery_or_print[{{ $index }}][send]" value="{{ $row['send'] ?? null }}"
+                                placeholder="Send"
+                                class="border border-gray-300 outline-[#99c041] rounded-xl px-3 py-2 w-1/3" />
+                                <input type="number" min="0" name="embroidery_or_print[{{ $index }}][receive]" value="{{ $row['receive'] ?? null }}"
+                                placeholder="Receive"
                                 class="border border-gray-300 outline-[#99c041] rounded-xl px-3 py-2 w-1/3" />
                             <button type="button"
                                 class="remove-row bg-red-500 text-white rounded-xl size-10 px-2 py-1 ml-2">
@@ -58,72 +74,69 @@
                     @php $index++; @endphp
                     @endforeach
                 </div>
-                <button type="button" id="add-cutting-row"
+                <button type="button" id="add-row"
                     class="mt-2 bg-blue-600 text-white px-4 py-2 rounded-xl shadow cursor-pointer">
                     + Add
                 </button>
 
                 <!-- Buttons -->
                 <div class="flex items-center gap-4 mt-5">
-                    <a href="{{ route('cutting.index') }}"
+                    <a href="{{ route('garment_types.index') }}"
                         class="bg-red-400 cursor-pointer hover:bg-red-500 text-white px-4 py-2 rounded-xl">
                         <i class="fa-regular fa-xmark pe-1"></i> Cancel
                     </a>
                     <button type="submit"
                         class="bg-[#99c041] cursor-pointer hover:bg-[#89bb13] text-white px-4 py-2 rounded-xl">
-                        <i class="fa-regular fa-file-spreadsheet pe-1"></i> Update
+                        <i class="fa-regular fa-file-spreadsheet pe-1"></i> Create
                     </button>
                 </div>
             </form>
+
         </div>
+
     </div>
 
     @push('scripts')
         <script>
-            // Get the last index from blade
-            let cuttingIndex = {{ count($cutting->cutting) }};
+           let embroideryIndex = {{ count($embroideryPrint->emb_or_print) }};
 
-            // Add cutting row dynamically
-            document.getElementById('add-cutting-row').addEventListener('click', function() {
-                const fields = document.getElementById('cutting-fields');
-                // create new mb-4 wrapper for each row
-                const wrapper = document.createElement('div');
-                wrapper.className = 'mb-4';
-                wrapper.innerHTML = `
-                    <div class="flex gap-2 items-center">
-                        <input type="text" name="cutting[${cuttingIndex}][color]" placeholder="Color"
-                            class="border border-gray-300 outline-[#99c041] rounded-xl px-3 py-2 w-2/3" />
-                        <input type="number" min="0" name="cutting[${cuttingIndex}][qty]" placeholder="Quantity"
-                            class="border border-gray-300 outline-[#99c041] rounded-xl px-3 py-2 w-1/3" />
-                        <button type="button"
-                            class="remove-row bg-red-500 text-white rounded-xl size-10 px-2 py-1 ml-2">
-                            &times;
-                        </button>
-                    </div>
-                    <span class="error text-red-500 text-xs mt-1 block"></span>
-                `;
-                fields.appendChild(wrapper);
-                cuttingIndex++;
+            document.getElementById('add-row').addEventListener('click', function() {
+                const fields = document.getElementById('add-fields');
+                const div = document.createElement('div');
+                div.className = 'flex gap-2 items-center';
+
+                div.innerHTML = `
+        <input type="text" name="embroidery_or_print[${embroideryIndex}][color]" placeholder="Color"
+            class="border border-gray-300 outline-[#99c041] rounded-xl px-3 py-2 w-2/3" />
+        <input type="number" min="0" name="embroidery_or_print[${embroideryIndex}][send]" placeholder="Send"
+            class="border border-gray-300 outline-[#99c041] rounded-xl px-3 py-2 w-1/3" />
+        <input type="number" min="0" name="embroidery_or_print[${embroideryIndex}][receive]" placeholder="Receive"
+            class="border border-gray-300 outline-[#99c041] rounded-xl px-3 py-2 w-1/3" />
+        <button type="button" class="remove-row bg-red-500 text-white rounded-xl px-2 py-1 ml-2 size-10 cursor-pointer">
+            &times;
+        </button>
+    `;
+                fields.appendChild(div);
+                embroideryIndex++;
                 updateRemoveButtons();
             });
 
-            // Remove row functionality
-            document.getElementById('cutting-fields').addEventListener('click', function(e) {
+            document.getElementById('add-fields').addEventListener('click', function(e) {
                 if (e.target.classList.contains('remove-row')) {
-                    e.target.closest('.mb-4').remove();
+                    e.target.parentNode.remove();
                     updateRemoveButtons();
                 }
             });
 
             function updateRemoveButtons() {
-                const rows = document.querySelectorAll('#cutting-fields .mb-4');
+                const rows = document.querySelectorAll('#add-fields .flex');
                 rows.forEach((row, idx) => {
                     const btn = row.querySelector('.remove-row');
                     btn.classList.toggle('hidden', rows.length === 1);
                 });
             }
 
-            // Initialize remove button visibility on page load
+            // Initialize on page load
             updateRemoveButtons();
 
             // Handle AJAX form submit for update

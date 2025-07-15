@@ -53,7 +53,7 @@
                                         class="fa-regular fa-pen"></i></a>
 
                                 <button
-                                    class="delete-embroidery-print-btn text-red-500 hover:text-red-700 cursor-pointer"
+                                    class="delete-btn text-red-500 hover:text-red-700 cursor-pointer"
                                     data-id="{{ $embroideryPrint->id }}" title="Delete"><i
                                         class="fa-regular fa-trash"></i></button>
 
@@ -96,7 +96,7 @@
                 }, 200);
 
                 // Delete cutting with custom modal
-                $(document).on("click", ".delete-cutting-btn", function(e) {
+                $(document).on("click", ".delete-btn", function(e) {
                     e.preventDefault();
                     let btn = $(this);
                     let userId = btn.data("id");
@@ -104,9 +104,9 @@
                         id: userId,
                         message: "Do you really want to delete this user? This process cannot be undone.",
                         onConfirm: function(id) {
-                            let btn = $(`button.delete-cutting-btn[data-id='${id}']`);
+                            let btn = $(`button.delete-btn[data-id='${id}']`);
                             $.ajax({
-                                url: "/cutting-report/" + id,
+                                url: "/embroidery-prints/" + id,
                                 type: "POST",
                                 data: {
                                     _method: "DELETE",
@@ -117,7 +117,7 @@
                                         showToast(
                                             "success",
                                             response.message ||
-                                            "Cutting report deleted successfully"
+                                            "Embroidery/Print report deleted successfully"
                                         );
                                         // Remove row from table
                                         let row = btn.closest("tr");

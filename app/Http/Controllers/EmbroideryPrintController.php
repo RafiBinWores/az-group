@@ -52,12 +52,14 @@ class EmbroideryPrintController extends Controller
 
         $validator->after(function ($validator) use ($request) {
             $exists = EmbroideryPrint::where('order_id', $request->order_id)
+                ->where('garment_type', $request->garment_type)
                 ->where('date', $request->date)
                 ->exists();
             if ($exists) {
-                $validator->errors()->add('date', 'A report for this style and date already exists.');
+                $validator->errors()->add('date', 'A report for this style, garment type, and date already exists.');
             }
         });
+
 
         // error messages
         if ($validator->fails()) {
@@ -84,40 +86,55 @@ class EmbroideryPrintController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show($cutting)
+    public function show($embroidery_print)
     {
 
-        $cutting = EmbroideryPrint::with('order')->findOrFail($cutting);
+        $embroideryPrints = EmbroideryPrint::with('order')->findOrFail($embroidery_print);
 
-        return view('embroidery-print.show', compact('cutting'));
+        return view('embroidery-print.show', compact('embroideryPrints'));
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit($cutting)
+    public function edit($embroidery_print)
     {
-        $cutting = EmbroideryPrint::with('order')->findOrFail($cutting);
+        $embroideryPrint = EmbroideryPrint::with('order')->findOrFail($embroidery_print);
         $orders = Order::get(['id', 'style_no']);
+        $types = GarmentType::get(['name']);
 
-        return view('embroidery-print.edit', compact('cutting', 'orders'));
+        return view('embroidery-print.edit', compact('embroideryPrint', 'orders', 'types'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $cutting)
+    public function update(Request $request, $embroidery_print)
     {
-        $cutting = EmbroideryPrint::findOrFail($cutting);
+        $embroideryPrint = EmbroideryPrint::findOrFail($embroidery_print);
 
         $validator = Validator::make($request->all(), [
             'order_id' => 'required|numeric',
-            'cutting' => 'required|array|min:1',
-            'cutting.*.color' => 'required|string',
-            'cutting.*.qty' => 'required',
+            'embroidery_or_print' => 'required|array|min:1',
+            'embroidery_or_print.*.color' => 'required|string',
+            'embroidery_or_print.*.send' => 'required',
+            'embroidery_or_print.*.receive' => 'nullable',
+            'date' => 'required|date',
+            'garment_type' => 'required|string',
         ], [
-            'order_id.required' => 'The style no is required.',
+            'order_id.required' => 'The style no field is required.',
         ]);
+
+        $validator->after(function ($validator) use ($request, $embroideryPrint) {
+            $exists = EmbroideryPrint::where('order_id', $request->order_id)
+                ->where('garment_type', $request->garment_type)
+                ->where('date', $request->date)
+                ->where('id', '!=', $embroideryPrint->id)
+                ->exists();
+            if ($exists) {
+                $validator->errors()->add('date', 'A report for this style, garment type, and date already exists.');
+            }
+        });;
 
         // error messages
         if ($validator->fails()) {
@@ -127,46 +144,50 @@ class EmbroideryPrintController extends Controller
             ]);
         }
 
-        // Compare the order_id and the cutting array directly
-        $orderChanged = $cutting->order_id != $request->order_id;
-        $cuttingChanged = $cutting->cutting != $request->cutting;
+        // Compare the array directly
+        $orderChanged = $embroideryPrint->order_id != $request->order_id;
+        $embroideryPrintChanged = $embroideryPrint->emb_or_print != $request->embroidery_or_print;
+        $dateChanged = $embroideryPrint->date != $request->date;
+        $garmentTypeChanged = $embroideryPrint->garment_type != $request->garment_type;
 
-        if (!$orderChanged && !$cuttingChanged) {
+        if (!$orderChanged && !$embroideryPrintChanged && !$dateChanged && !$garmentTypeChanged) {
             return response()->json([
                 'status' => false,
                 'message' => 'Nothing to update.',
             ]);
         }
 
-        // Create Cutting report
-        $cutting->update([
+        // Update report
+        $embroideryPrint->update([
             'order_id' => $request->order_id,
-            'cutting' => $request->cutting,
+            'emb_or_print' => $request->embroidery_or_print,
+            'garment_type' => $request->garment_type,
+            'date' => $request->date,
         ]);
 
         return response()->json([
             'status' => true,
-            'message' => 'Cutting Report update successfully.',
+            'message' => 'Embroidery/Print Report update successfully.',
         ]);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy($cutting)
+    public function destroy($embroidery_print)
     {
-        $cutting = EmbroideryPrint::findOrFail($cutting);
+        $embroideryPrint = EmbroideryPrint::findOrFail($embroidery_print);
 
-        $cutting->delete();
+        $embroideryPrint->delete();
 
         if (request()->ajax() || request()->wantsJson()) {
             return response()->json([
                 'status' => true,
-                'message' => 'Cutting report deleted successfully.'
+                'message' => 'Embroidery/Print report deleted successfully.'
             ]);
         }
 
-        return redirect()->route('cutting.index')->with('success', 'Cutting report deleted successfully');
+        return redirect()->route('embroidery_prints.index')->with('success', 'Embroidery/Print report deleted successfully');
     }
 
     // Excel download
