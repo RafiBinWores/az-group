@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Exports\CuttingExport;
 use App\Models\Cutting;
+use App\Models\GarmentType;
 use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -27,8 +28,11 @@ class CuttingController extends Controller
     public function create()
     {
         $orders = Order::get(['id', 'style_no']);
+        $types = GarmentType::where('status', 1)
+                ->orderBy('name', 'ASC')
+                ->get(['name']);
 
-        return view('cutting.create', compact('orders'));
+        return view('cutting.create', compact('orders', 'types'));
     }
 
     /**
@@ -39,6 +43,7 @@ class CuttingController extends Controller
 
         $validator = Validator::make($request->all(), [
             'order_id' => 'required|numeric',
+            'garment_type' => 'required|string',
             'cutting' => 'required|array|min:1',
             'cutting.*.color' => 'required|string',
             'cutting.*.qty' => 'required',
@@ -57,6 +62,7 @@ class CuttingController extends Controller
         // Create Cutting report
         Cutting::create([
             'order_id' => $request->order_id,
+            'garment_type' => $request->garment_type,
             'cutting' => $request->cutting,
         ]);
 
@@ -71,7 +77,6 @@ class CuttingController extends Controller
      */
     public function show($cutting)
     {
-
         $cutting = Cutting::with('order')->findOrFail($cutting);
 
         return view('cutting.show', compact('cutting'));
@@ -82,10 +87,16 @@ class CuttingController extends Controller
      */
     public function edit($cutting)
     {
-        $cutting = Cutting::with('order')->findOrFail($cutting);
+        $cutting = Cutting::with('order')
+                ->findOrFail($cutting);
+
         $orders = Order::get(['id', 'style_no']);
 
-        return view('cutting.edit', compact('cutting', 'orders'));
+        $types = GarmentType::where('status', 1)
+                ->orderBy('name', 'ASC')
+                ->get(['name']);
+
+        return view('cutting.edit', compact('cutting', 'orders', 'types'));
     }
 
     /**
@@ -97,6 +108,7 @@ class CuttingController extends Controller
 
         $validator = Validator::make($request->all(), [
             'order_id' => 'required|numeric',
+            'garment_type' => 'required|string',
             'cutting' => 'required|array|min:1',
             'cutting.*.color' => 'required|string',
             'cutting.*.qty' => 'required',
@@ -115,8 +127,9 @@ class CuttingController extends Controller
         // Compare the order_id and the cutting array directly
         $orderChanged = $cutting->order_id != $request->order_id;
         $cuttingChanged = $cutting->cutting != $request->cutting;
+        $typeChanged = $cutting->garment_type != $request->garment_type;
 
-        if (!$orderChanged && !$cuttingChanged) {
+        if (!$orderChanged && !$cuttingChanged && !$typeChanged) {
             return response()->json([
                 'status' => false,
                 'message' => 'Nothing to update.',
@@ -126,6 +139,7 @@ class CuttingController extends Controller
         // Create Cutting report
         $cutting->update([
             'order_id' => $request->order_id,
+            'garment_type' => $request->garment_type,
             'cutting' => $request->cutting,
         ]);
 

@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('cuttings', function (Blueprint $table) {
             $table->id();
             $table->foreignId('order_id')->constrained()->onDelete('cascade');
+            $table->string('type');
             $table->json('cutting');
             $table->softDeletes();
             $table->timestamps();

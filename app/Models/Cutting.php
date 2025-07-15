@@ -11,6 +11,7 @@ class Cutting extends Model
 
     protected $fillable = [
         'order_id',
+        'garment_type',
         'cutting',
     ];
 

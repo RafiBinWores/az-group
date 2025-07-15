@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\EmbroideryPrint;
+use App\Models\GarmentType;
 use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -26,8 +27,9 @@ class EmbroideryPrintController extends Controller
     public function create()
     {
         $orders = Order::get(['id', 'style_no']);
+        $types = GarmentType::get(['name']);
 
-        return view('embroidery-print.create', compact('orders'));
+        return view('embroidery-print.create', compact('orders', 'types'));
     }
 
     /**
@@ -42,7 +44,8 @@ class EmbroideryPrintController extends Controller
             'embroidery_or_print.*.color' => 'required|string',
             'embroidery_or_print.*.send' => 'required',
             'embroidery_or_print.*.receive' => 'nullable',
-            'date' => 'required|date'
+            'date' => 'required|date',
+            'garment_type' => 'required|string',
         ], [
             'order_id.required' => 'The style no field is required.',
         ]);
@@ -68,7 +71,8 @@ class EmbroideryPrintController extends Controller
         EmbroideryPrint::create([
             'order_id' => $request->order_id,
             'emb_or_print' => $request->embroidery_or_print,
-            'date'=>$request->date,
+            'garment_type' => $request->garment_type,
+            'date' => $request->date,
         ]);
 
         return response()->json([

@@ -20,6 +20,7 @@
                     <tr>
                         <th class="px-4 py-3 text-left font-semibold text-gray-700">ID</th>
                         <th class="px-4 py-3 text-left font-semibold text-gray-700">Style No</th>
+                        <th class="px-4 py-3 text-left font-semibold text-gray-700">Garment Type</th>
                         <th class="px-4 py-3 text-left font-semibold text-gray-700">Total Cutting</th>
                         <th class="px-4 py-3 text-left font-semibold text-gray-700">Actions</th>
                     </tr>
@@ -33,6 +34,7 @@
                         <tr class="border-b-gray-400" data-order-id="{{ $cutting->id }}">
                             <td class="px-4 py-2">{{ $cutting->id }}</td>
                             <td class="px-4 py-2">{{ $cutting->order->style_no ?? 'N/A' }}</td>
+                            <td class="px-4 py-2">{{ $cutting->garment_type ?? 'N/A' }}</td>
                             <td class="px-4 py-2 font-bold text-green-600">{{ $totalQty }}</td>
                             <td class="px-4 py-2 flex gap-5 items-center">
                                 <a class="text-blue-500 rounded-full" href="{{ route('cutting.export', $cutting->id) }}"><i class="fa-regular fa-file-xls"></i></a>

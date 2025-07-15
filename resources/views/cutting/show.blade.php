@@ -16,6 +16,8 @@
             <div class="flex items-center justify-between px-6 py-4">
                 <div class="text-gray-700 font-semibold text-lg">
                     Style No : <span class="text-[#99c041]">{{ $cutting->order->style_no }}</span>
+                    <p class="text-sm mb-3 mt-1">Garment Type: <span class="font-normal">{{ $cutting->garment_type }}
+                        </span></p>
                     <p class="text-sm">Date: <span class="font-normal">{{ $cutting->created_at->format('d-m-Y') }}
                         </span></p>
                 </div>
@@ -30,9 +32,6 @@
                 </div>
             </div>
         </div>
-
-
-
 
         <div class="relative overflow-x-auto mt-4">
             <table class="w-full text-sm text-left rtl:text-right text-gray-500">

@@ -20,6 +20,7 @@
                     <tr>
                         <th class="px-4 py-3 text-left font-semibold text-gray-700">ID</th>
                         <th class="px-4 py-3 text-left font-semibold text-gray-700">Style No</th>
+                        <th class="px-4 py-3 text-left font-semibold text-gray-700">Garment Type</th>
                         <th class="px-4 py-3 text-left font-semibold text-gray-700">Send</th>
                         <th class="px-4 py-3 text-left font-semibold text-gray-700">Receive</th>
                         <th class="px-4 py-3 text-left font-semibold text-gray-700">Date</th>
@@ -36,6 +37,7 @@
                         <tr class="border-b-gray-400" data-order-id="{{ $embroideryPrint->id }}">
                             <td class="px-4 py-2">{{ $embroideryPrint->id }}</td>
                             <td class="px-4 py-2">{{ $embroideryPrint->order->style_no ?? 'N/A' }}</td>
+                            <td class="px-4 py-2">{{ $embroideryPrint->garment_type ?? 'N/A' }}</td>
                             <td class="px-4 py-2 font-bold text-green-600">{{ $totalSend }}</td>
                             <td class="px-4 py-2 font-bold text-green-600">{{ $totalReceive }}</td>
                             <td class="px-4 py-2">{{ \Carbon\Carbon::parse($embroideryPrint->date)->format('M d, Y') }}

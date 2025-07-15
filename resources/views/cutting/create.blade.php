@@ -31,6 +31,18 @@
                     <span class="error text-red-500 text-xs mt-1 block"></span>
                 </div>
 
+                <div class="mb-4">
+                    <label class="font-semibold">Garment Type</label>
+                    <select name="garment_type" id="garment_type"
+                        class="w-full border mt-3 outline-[#99c041] border-gray-300 px-3 py-2 rounded-xl focus:ring-[#99c041] focus:border-[#99c041] transition">
+                        <option value="" class="text-gray-300">Select...</option>
+                        @foreach ($types as $type)
+                            <option value="{{ $type->name }}">{{ $type->name }}</option>
+                        @endforeach
+                    </select>
+                    <span class="error text-red-500 text-xs mt-1 block"></span>
+                </div>
+
                 {{-- Cutting Report --}}
                 <div id="cutting-fields" class="space-y-2 mb-4">
                     <label for="style_no" class="font-semibold">Cutting</label>

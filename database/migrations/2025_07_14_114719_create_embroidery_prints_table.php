@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('order_id')->constrained()->onDelete('cascade');
             $table->json('emb_or_print');
+            $table->string('type');
             $table->date('date');
             $table->softDeletes();
             $table->timestamps();
