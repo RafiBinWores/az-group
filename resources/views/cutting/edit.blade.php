@@ -17,7 +17,8 @@
         </div>
 
         <div class="p-6 font-ibm">
-            <form id="form" action="{{ route('cutting.update', $cutting->id) }}" method="POST" enctype="multipart/form-data">
+            <form id="form" action="{{ route('cutting.update', $cutting->id) }}" method="POST"
+                enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
 
@@ -27,7 +28,8 @@
                         class="w-full border mt-3 outline-[#99c041] border-gray-300 px-3 py-2 rounded-xl focus:ring-[#99c041] focus:border-[#99c041] transition">
                         <option value="" class="text-gray-300">Select a style</option>
                         @foreach ($orders as $order)
-                            <option value="{{ $order->id }}" {{ $order->id == $cutting->order_id ? 'selected' : '' }}>
+                            <option value="{{ $order->id }}"
+                                {{ $order->id == $cutting->order_id ? 'selected' : '' }}>
                                 {{ $order->style_no }}
                             </option>
                         @endforeach
@@ -41,9 +43,18 @@
                         class="w-full border mt-3 outline-[#99c041] border-gray-300 px-3 py-2 rounded-xl focus:ring-[#99c041] focus:border-[#99c041] transition">
                         <option value="" class="text-gray-300">Select...</option>
                         @foreach ($types as $type)
-                            <option value="{{ $type->name }}" {{ $type->name == $cutting->garment_type ? 'selected' : '' }}>{{ $type->name }}</option>
+                            <option value="{{ $type->name }}"
+                                {{ $type->name == $cutting->garment_type ? 'selected' : '' }}>{{ $type->name }}
+                            </option>
                         @endforeach
                     </select>
+                    <span class="error text-red-500 text-xs mt-1 block"></span>
+                </div>
+
+                <div class="mb-4">
+                    <label class="font-semibold">Date</label>
+                    <input type="date" name="date" id="date" value="{{ $cutting->date }}"
+                        class="w-full border mt-3 outline-[#99c041] border-gray-300 px-3 py-2 rounded-xl focus:ring-[#99c041] focus:border-[#99c041] transition">
                     <span class="error text-red-500 text-xs mt-1 block"></span>
                 </div>
 
@@ -52,22 +63,22 @@
                     <label for="style_no" class="font-semibold">Cutting</label>
                     @php $index = 0; @endphp
                     @foreach ($cutting->cutting as $row)
-                    <div class="mb-4">
-                        <div class="flex gap-2 items-center">
-                            <input type="text" name="cutting[{{ $index }}][color]" value="{{ $row['color'] }}"
-                                placeholder="Color"
-                                class="border border-gray-300 outline-[#99c041] rounded-xl px-3 py-2 w-2/3" />
-                            <input type="number" min="0" name="cutting[{{ $index }}][qty]" value="{{ $row['qty'] }}"
-                                placeholder="Quantity"
-                                class="border border-gray-300 outline-[#99c041] rounded-xl px-3 py-2 w-1/3" />
-                            <button type="button"
-                                class="remove-row bg-red-500 text-white rounded-xl size-10 px-2 py-1 ml-2">
-                                &times;
-                            </button>
+                        <div class="mb-4">
+                            <div class="flex gap-2 items-center">
+                                <input type="text" name="cutting[{{ $index }}][color]"
+                                    value="{{ $row['color'] }}" placeholder="Color"
+                                    class="border border-gray-300 outline-[#99c041] rounded-xl px-3 py-2 w-2/3" />
+                                <input type="number" min="0" name="cutting[{{ $index }}][qty]"
+                                    value="{{ $row['qty'] }}" placeholder="Quantity"
+                                    class="border border-gray-300 outline-[#99c041] rounded-xl px-3 py-2 w-1/3" />
+                                <button type="button"
+                                    class="remove-row bg-red-500 text-white rounded-xl size-10 px-2 py-1 ml-2">
+                                    &times;
+                                </button>
+                            </div>
+                            <span class="error text-red-500 text-xs mt-1 block"></span>
                         </div>
-                        <span class="error text-red-500 text-xs mt-1 block"></span>
-                    </div>
-                    @php $index++; @endphp
+                        @php $index++; @endphp
                     @endforeach
                 </div>
                 <button type="button" id="add-cutting-row"
@@ -139,7 +150,7 @@
             updateRemoveButtons();
 
             // Handle AJAX form submit for update
-           $(function() {
+            $(function() {
                 $("form").on("submit", function(event) {
                     event.preventDefault();
                     let form = $(this);

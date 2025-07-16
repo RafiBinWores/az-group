@@ -13,6 +13,7 @@ class Cutting extends Model
         'order_id',
         'garment_type',
         'cutting',
+        'date'
     ];
 
     protected $casts = [

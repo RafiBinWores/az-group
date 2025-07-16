@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('order_id')->constrained()->onDelete('cascade');
             $table->string('type');
             $table->json('cutting');
+            $table->date('date');
             $table->softDeletes();
             $table->timestamps();
         });

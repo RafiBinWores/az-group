@@ -42,6 +42,12 @@
                     </select>
                     <span class="error text-red-500 text-xs mt-1 block"></span>
                 </div>
+                <div class="mb-4">
+                    <label class="font-semibold">Date</label>
+                    <input type="date" name="date" id="date"
+                        class="w-full border mt-3 outline-[#99c041] border-gray-300 px-3 py-2 rounded-xl focus:ring-[#99c041] focus:border-[#99c041] transition">
+                    <span class="error text-red-500 text-xs mt-1 block"></span>
+                </div>
 
                 {{-- Cutting Report --}}
                 <div id="cutting-fields" class="space-y-2 mb-4">

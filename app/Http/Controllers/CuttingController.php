@@ -29,8 +29,8 @@ class CuttingController extends Controller
     {
         $orders = Order::get(['id', 'style_no']);
         $types = GarmentType::where('status', 1)
-                ->orderBy('name', 'ASC')
-                ->get(['name']);
+            ->orderBy('name', 'ASC')
+            ->get(['name']);
 
         return view('cutting.create', compact('orders', 'types'));
     }
@@ -44,6 +44,7 @@ class CuttingController extends Controller
         $validator = Validator::make($request->all(), [
             'order_id' => 'required|numeric',
             'garment_type' => 'required|string',
+            'date' => 'required|date',
             'cutting' => 'required|array|min:1',
             'cutting.*.color' => 'required|string',
             'cutting.*.qty' => 'required',
@@ -63,6 +64,7 @@ class CuttingController extends Controller
         Cutting::create([
             'order_id' => $request->order_id,
             'garment_type' => $request->garment_type,
+            'date' => $request->date,
             'cutting' => $request->cutting,
         ]);
 
@@ -88,13 +90,13 @@ class CuttingController extends Controller
     public function edit($cutting)
     {
         $cutting = Cutting::with('order')
-                ->findOrFail($cutting);
+            ->findOrFail($cutting);
 
         $orders = Order::get(['id', 'style_no']);
 
         $types = GarmentType::where('status', 1)
-                ->orderBy('name', 'ASC')
-                ->get(['name']);
+            ->orderBy('name', 'ASC')
+            ->get(['name']);
 
         return view('cutting.edit', compact('cutting', 'orders', 'types'));
     }
@@ -109,6 +111,7 @@ class CuttingController extends Controller
         $validator = Validator::make($request->all(), [
             'order_id' => 'required|numeric',
             'garment_type' => 'required|string',
+            'date' => 'required|date',
             'cutting' => 'required|array|min:1',
             'cutting.*.color' => 'required|string',
             'cutting.*.qty' => 'required',
@@ -127,9 +130,10 @@ class CuttingController extends Controller
         // Compare the order_id and the cutting array directly
         $orderChanged = $cutting->order_id != $request->order_id;
         $cuttingChanged = $cutting->cutting != $request->cutting;
+        $dateChanged = $cutting->date != $request->date;
         $typeChanged = $cutting->garment_type != $request->garment_type;
 
-        if (!$orderChanged && !$cuttingChanged && !$typeChanged) {
+        if (!$orderChanged && !$cuttingChanged && !$typeChanged && !$dateChanged) {
             return response()->json([
                 'status' => false,
                 'message' => 'Nothing to update.',
@@ -140,6 +144,7 @@ class CuttingController extends Controller
         $cutting->update([
             'order_id' => $request->order_id,
             'garment_type' => $request->garment_type,
+            'date' => $request->date,
             'cutting' => $request->cutting,
         ]);
 
