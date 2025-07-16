@@ -1,10 +1,10 @@
 <x-layouts.app>
     {{-- Page title --}}
-    <x-slot name="title">Edit Embroidery or Print | AZ Group</x-slot>
+    <x-slot name="title">Create Wash Report | AZ Group</x-slot>
     {{-- Page title end --}}
 
     {{-- Page header --}}
-    <x-slot name="header">Edit Embroidery or Print</x-slot>
+    <x-slot name="header">Create Wash Report</x-slot>
     {{-- Page header end --}}
 
     {{-- Notifications --}}
@@ -17,17 +17,15 @@
         </div>
 
         <div class="p-6 font-ibm">
-            <form action="{{ route('embroidery_prints.update', $embroideryPrint->id) }}" method="POST">
+            <form action="{{ route('washes.store') }}" method="POST">
                 @csrf
-                @method('PUT')
-
                 <div class="mb-4">
                     <label class="font-semibold">Style No</label>
                     <select name="order_id" id="style-select"
                         class="w-full border mt-3 outline-[#99c041] border-gray-300 px-3 py-2 rounded-xl focus:ring-[#99c041] focus:border-[#99c041] transition">
                         <option value="" class="text-gray-300">Select a style</option>
                         @foreach ($orders as $order)
-                            <option value="{{ $order->id }}" {{ $embroideryPrint->order_id == $order->id ? 'selected' : '' }}>{{ $order->style_no }}</option>
+                            <option value="{{ $order->id }}">{{ $order->style_no }}</option>
                         @endforeach
                     </select>
                     <span class="error text-red-500 text-xs mt-1 block"></span>
@@ -38,56 +36,50 @@
                         class="w-full border mt-3 outline-[#99c041] border-gray-300 px-3 py-2 rounded-xl focus:ring-[#99c041] focus:border-[#99c041] transition">
                         <option value="" class="text-gray-300">Select...</option>
                         @foreach ($types as $type)
-                            <option value="{{ $type->name }}" {{ $embroideryPrint->garment_type == $type->name ? 'selected' : '' }}>{{ $type->name }}</option>
+                            <option value="{{ $type->name }}">{{ $type->name }}</option>
                         @endforeach
                     </select>
                     <span class="error text-red-500 text-xs mt-1 block"></span>
                 </div>
                 <div class="mb-4">
                     <label class="font-semibold">Date</label>
-                    <input type="date" name="date" value="{{ $embroideryPrint->date }}" id="date" class="w-full border mt-3 outline-[#99c041] border-gray-300 px-3 py-2 rounded-xl focus:ring-[#99c041] focus:border-[#99c041] transition">
+                    <input type="date" name="date" id="date"
+                        class="w-full border mt-3 outline-[#99c041] border-gray-300 px-3 py-2 rounded-xl focus:ring-[#99c041] focus:border-[#99c041] transition">
                     <span class="error text-red-500 text-xs mt-1 block"></span>
                 </div>
 
                 <div id="add-fields" class="space-y-2 mb-4">
-                    <label for="style_no" class="font-semibold">Embroidery or Print</label>
-                    @php $index = 0; @endphp
-                    @foreach ($embroideryPrint->emb_or_print as $row)
-                    <div class="mb-4">
-                        <div class="flex gap-2 items-center">
-                            <input type="text" name="embroidery_or_print[{{ $index }}][color]" value="{{ $row['color'] }}"
-                                placeholder="Color"
-                                class="border border-gray-300 outline-[#99c041] rounded-xl px-3 py-2 w-2/3" />
-                            <input type="number" min="0" name="embroidery_or_print[{{ $index }}][send]" value="{{ $row['send'] ?? null }}"
-                                placeholder="Send"
-                                class="border border-gray-300 outline-[#99c041] rounded-xl px-3 py-2 w-1/3" />
-                                <input type="number" min="0" name="embroidery_or_print[{{ $index }}][receive]" value="{{ $row['receive'] ?? null }}"
-                                placeholder="Receive"
-                                class="border border-gray-300 outline-[#99c041] rounded-xl px-3 py-2 w-1/3" />
-                            <button type="button"
-                                class="remove-row bg-red-500 text-white rounded-xl size-10 px-2 py-1 ml-2">
-                                &times;
-                            </button>
-                        </div>
-                        <span class="error text-red-500 text-xs mt-1 block"></span>
+                    <label class="font-semibold">Wash Report</label>
+                    <div class="flex gap-2 items-center">
+                        <input type="text" name="wash[0][color]" placeholder="Color"
+                            class="border border-gray-300 outline-[#99c041] rounded-xl px-3 py-2 w-2/3" />
+                        <input type="number" min="0" name="wash[0][send]" placeholder="Send"
+                            class="border border-gray-300 outline-[#99c041] rounded-xl px-3 py-2 w-1/3" />
+                        <input type="number" min="0" name="wash[0][receive]"
+                            placeholder="Receive"
+                            class="border border-gray-300 outline-[#99c041] rounded-xl px-3 py-2 w-1/3" />
+                        <button type="button"
+                            class="remove-row bg-red-500 text-white rounded-xl size-10 px-2 py-1 ml-2 hidden">
+                            &times;
+                        </button>
                     </div>
-                    @php $index++; @endphp
-                    @endforeach
+                    <span class="error text-red-500 text-xs mt-1 block"></span>
                 </div>
                 <button type="button" id="add-row"
                     class="mt-2 bg-blue-600 text-white px-4 py-2 rounded-xl shadow cursor-pointer">
                     + Add
                 </button>
 
+
                 <!-- Buttons -->
                 <div class="flex items-center gap-4 mt-5">
-                    <a href="{{ route('embroidery_prints.index') }}"
+                    <a href="{{ route('washes.index') }}"
                         class="bg-red-400 cursor-pointer hover:bg-red-500 text-white px-4 py-2 rounded-xl">
                         <i class="fa-regular fa-xmark pe-1"></i> Cancel
                     </a>
                     <button type="submit"
                         class="bg-[#99c041] cursor-pointer hover:bg-[#89bb13] text-white px-4 py-2 rounded-xl">
-                        <i class="fa-regular fa-file-spreadsheet pe-1"></i> Update
+                        <i class="fa-regular fa-file-spreadsheet pe-1"></i> Create
                     </button>
                 </div>
             </form>
@@ -98,7 +90,7 @@
 
     @push('scripts')
         <script>
-           let embroideryIndex = {{ count($embroideryPrint->emb_or_print) }};
+            let embroideryIndex = 1; // Because initial is 0
 
             document.getElementById('add-row').addEventListener('click', function() {
                 const fields = document.getElementById('add-fields');
@@ -139,8 +131,9 @@
             // Initialize on page load
             updateRemoveButtons();
 
-            // Handle AJAX form submit for update
-           $(function() {
+
+            // FOr submit the form
+            $(function() {
                 $("form").on("submit", function(event) {
                     event.preventDefault();
                     let form = $(this);
@@ -162,14 +155,11 @@
                             if (response.status) {
                                 showToast(
                                     "success",
-                                    response.message || "Cutting report updated successfully"
+                                    response.message || "User created successfully"
                                 );
                                 // Optionally redirect after success:
                                 // setTimeout(function() { window.location.href = "{{ route('users.index') }}"; }, 1200);
                             } else {
-                                if (response.message) {
-                                    showToast("warning", response.message);
-                                }
                                 let errors = response.errors || {};
 
                                 // Clear previous errors

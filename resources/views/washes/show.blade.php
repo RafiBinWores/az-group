@@ -1,10 +1,10 @@
 <x-layouts.app>
     {{-- Page title --}}
-    <x-slot name="title">Embroidery/Print details | AZ Group</x-slot>
+    <x-slot name="title">Wash details | AZ Group</x-slot>
     {{-- Page title end --}}
 
     {{-- Page header --}}
-    <x-slot name="header">Embroidery/Print details</x-slot>
+    <x-slot name="header">Wash details</x-slot>
     {{-- Page header end --}}
 
     {{-- Notifications --}}
@@ -15,27 +15,24 @@
         <div class="border-b border-gray-200">
             <div class="flex items-center justify-between px-6 py-4">
                 <div class="text-gray-700 font-semibold text-lg">
-                    Style No : <span class="text-[#99c041]">{{ $embroideryPrint->order->style_no }}</span>
+                    Style No : <span class="text-[#99c041]">{{ $wash->order->style_no }}</span>
                     <p class="text-sm mb-3 mt-1">Garment Type: <span
-                            class="font-normal">{{ $embroideryPrint->garment_type }}
+                            class="font-normal">{{ $wash->garment_type }}
                         </span></p>
-                    <p class="text-sm">Date: <span class="font-normal">{{ $embroideryPrint->date }}
+                    <p class="text-sm">Date: <span class="font-normal">{{ $wash->date }}
                         </span></p>
                 </div>
                 <div class="flex items-center gap-2">
-                    <a href="{{ route('embroidery_prints.export', $embroideryPrint->id) }}"
+                    <a href="{{ route('washes.export', $wash->id) }}"
                         class="inline-block px-4 py-2 bg-sky-500 rounded hover:bg-sky-700 duration-200">
                         <i class="fa-regular fa-file-xls text-white"></i>
                     </a>
                     <a class="bg-green-500 px-4 py-2 rounded hover:bg-green-600 duration-200"
-                        href="{{ route('embroidery_prints.edit', $embroideryPrint->id) }}"><i
+                        href="{{ route('washes.edit', $wash->id) }}"><i
                             class="fa-regular fa-pen text-white"></i></a>
                 </div>
             </div>
         </div>
-
-
-
 
         <div class="relative overflow-x-auto mt-4">
             <table class="w-full text-sm text-left rtl:text-right text-gray-500">
@@ -56,15 +53,15 @@
                     </tr>
                 </thead>
                 @php
-                    $totalSend = collect($embroideryPrint->emb_or_print ?? [])->sum('send');
-                    $totalReceive = collect($embroideryPrint->emb_or_print ?? [])->sum('receive');
-                    $totalBalance = collect($embroideryPrint->emb_or_print ?? [])->sum(function ($row) {
+                    $totalSend = collect($wash->wash ?? [])->sum('send');
+                    $totalReceive = collect($wash->wash ?? [])->sum('receive');
+                    $totalBalance = collect($wash->wash ?? [])->sum(function ($row) {
                         return ($row['send'] ?? 0) - ($row['receive'] ?? 0);
                     });
                 @endphp
 
                 <tbody>
-                    @foreach ($embroideryPrint->emb_or_print as $row)
+                    @foreach ($wash->wash as $row)
                         <tr class="border-b border-gray-200">
                             <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
                                 {{ $row['color'] }}
@@ -92,8 +89,6 @@
             </table>
 
         </div>
-
-
 
     </div>
 </x-layouts.app>

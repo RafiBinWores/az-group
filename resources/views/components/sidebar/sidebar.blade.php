@@ -64,10 +64,10 @@
                         </a>
                     </li>
                     <li>
-                        <a href="#"
-                            class="flex items-center gap-3 px-2 py-2 mt-2 duration-150 rounded-md group item {{ request()->routeIs('orders.index') ? 'bg-gray-100' : 'hover:bg-gray-100 hover:translate-x-2' }}">
-                            <i class="fi fi-rr-washer text-gray-500 {{ request()->routeIs('orders.index') ? 'text-gray-700' : 'group-hover:text-gray-700' }}"></i>
-                            <span class="text-sm font-medium text-gray-500 {{ request()->routeIs('orders.index') ? 'text-gray-700' : 'group-hover:text-gray-700' }} label">Wash
+                        <a href="{{ route('washes.index') }}"
+                            class="flex items-center gap-3 px-2 py-2 mt-2 duration-150 rounded-md group item {{ request()->routeIs('washes.index') ? 'bg-gray-100' : 'hover:bg-gray-100 hover:translate-x-2' }}">
+                            <i class="fi fi-rr-washer text-gray-500 {{ request()->routeIs('washes.index') ? 'text-gray-700' : 'group-hover:text-gray-700' }}"></i>
+                            <span class="text-sm font-medium text-gray-500 {{ request()->routeIs('washes.index') ? 'text-gray-700' : 'group-hover:text-gray-700' }} label">Wash
                                 Report</span>
                         </a>
                     </li>
@@ -157,40 +157,40 @@
                     <li>
                         <a href="#"
                             class="flex items-center gap-3 px-2 py-2 mt-2 duration-150 rounded-md group item {{ request()->routeIs('orders.index') ? 'bg-gray-100' : 'hover:bg-gray-100 hover:translate-x-2' }}">
-                            <i class="text-gray-500 fa-regular fa-chart-pie group-hover:text-gray-700"></i>
-                            <span class="text-sm font-medium text-gray-500 group-hover:text-gray-700 label">Production
+                            <i class="text-gray-500 fa-regular fa-chart-pie {{ request()->routeIs('users.index') ? 'text-gray-700' : 'group-hover:text-gray-700' }}"></i>
+                            <span class="text-sm font-medium text-gray-500 {{ request()->routeIs('orders.index') ? 'text-gray-700' : 'group-hover:text-gray-700' }} label">Production
                                 Report</span>
                         </a>
                     </li>
                     <li>
                         <a href="#"
                             class="flex items-center gap-3 px-2 py-2 mt-2 duration-150 rounded-md group item {{ request()->routeIs('orders.index') ? 'bg-gray-100' : 'hover:bg-gray-100 hover:translate-x-2' }}">
-                            <i class="text-gray-500 fa-regular fa-box-open-full group-hover:text-gray-700"></i>
-                            <span class="text-sm font-medium text-gray-500 group-hover:text-gray-700 label">Finishing
+                            <i class="text-gray-500 fa-regular fa-box-open-full {{ request()->routeIs('orders.index') ? 'text-gray-700' : 'group-hover:text-gray-700' }}"></i>
+                            <span class="text-sm font-medium text-gray-500 {{ request()->routeIs('orders.index') ? 'text-gray-700' : 'group-hover:text-gray-700' }} label">Finishing
                                 Report</span>
                         </a>
                     </li>
                     <li>
                         <a href="{{ route('cutting.index') }}"
-                            class="flex items-center gap-3 px-2 py-2 mt-2 duration-150 rounded-md group item {{ request()->routeIs('orders.index') ? 'bg-gray-100' : 'hover:bg-gray-100 hover:translate-x-2' }}">
-                            <i class="text-gray-500 fa-regular fa-scissors group-hover:text-gray-700"></i>
-                            <span class="text-sm font-medium text-gray-500 group-hover:text-gray-700 label">Cutting
+                            class="flex items-center gap-3 px-2 py-2 mt-2 duration-150 rounded-md group item {{ request()->routeIs('cutting.index') ? 'bg-gray-100' : 'hover:bg-gray-100 hover:translate-x-2' }}">
+                            <i class="text-gray-500 fa-regular fa-scissors {{ request()->routeIs('cutting.index') ? 'text-gray-700' : 'group-hover:text-gray-700' }}"></i>
+                            <span class="text-sm font-medium text-gray-500 {{ request()->routeIs('cutting.index') ? 'text-gray-700' : 'group-hover:text-gray-700' }} label">Cutting
                                 Report</span>
                         </a>
                     </li>
                     <li>
                         <a href="{{ route('embroidery_prints.index') }}"
-                            class="flex items-center gap-3 px-2 py-2 mt-2 duration-150 rounded-md group item {{ request()->routeIs('orders.index') ? 'bg-gray-100' : 'hover:bg-gray-100 hover:translate-x-2' }}">
-                            <i class="fi fi-rr-sewing-machine text-gray-500 group-hover:text-gray-700"></i>
-                            <span class="text-sm font-medium text-gray-500 group-hover:text-gray-700 label">Embroidery/Print
+                            class="flex items-center gap-3 px-2 py-2 mt-2 duration-150 rounded-md group item {{ request()->routeIs('embroidery_prints.index') ? 'bg-gray-100' : 'hover:bg-gray-100 hover:translate-x-2' }}">
+                            <i class="fi fi-rr-sewing-machine text-gray-500 {{ request()->routeIs('embroidery_prints.index') ? 'text-gray-700' : 'group-hover:text-gray-700' }}"></i>
+                            <span class="text-sm font-medium text-gray-500 {{ request()->routeIs('embroidery_prints.index') ? 'text-gray-700' : 'group-hover:text-gray-700' }} label">Embroidery/Print
                                 Report</span>
                         </a>
                     </li>
                     <li>
-                        <a href="#"
-                            class="flex items-center gap-3 px-2 py-2 mt-2 duration-150 rounded-md group item {{ request()->routeIs('orders.index') ? 'bg-gray-100' : 'hover:bg-gray-100 hover:translate-x-2' }}">
-                            <i class="fi fi-rr-washer text-gray-500 group-hover:text-gray-700"></i>
-                            <span class="text-sm font-medium text-gray-500 group-hover:text-gray-700 label">Wash
+                        <a href="{{ route('washes.index') }}"
+                            class="flex items-center gap-3 px-2 py-2 mt-2 duration-150 rounded-md group item {{ request()->routeIs('washes.index') ? 'bg-gray-100' : 'hover:bg-gray-100 hover:translate-x-2' }}">
+                            <i class="fi fi-rr-washer text-gray-500 {{ request()->routeIs('washes.index') ? 'text-gray-700' : 'group-hover:text-gray-700' }}"></i>
+                            <span class="text-sm font-medium text-gray-500 {{ request()->routeIs('washes.index') ? 'text-gray-700' : 'group-hover:text-gray-700' }} label">Wash
                                 Report</span>
                         </a>
                     </li>

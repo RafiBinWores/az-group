@@ -17,7 +17,7 @@
         </div>
 
         <div class="p-6 font-ibm">
-            <form action="{{ route('embroidery_prints.update', $embroideryPrint->id) }}" method="POST">
+            <form action="{{ route('washes.update', $wash->id) }}" method="POST">
                 @csrf
                 @method('PUT')
 
@@ -27,7 +27,7 @@
                         class="w-full border mt-3 outline-[#99c041] border-gray-300 px-3 py-2 rounded-xl focus:ring-[#99c041] focus:border-[#99c041] transition">
                         <option value="" class="text-gray-300">Select a style</option>
                         @foreach ($orders as $order)
-                            <option value="{{ $order->id }}" {{ $embroideryPrint->order_id == $order->id ? 'selected' : '' }}>{{ $order->style_no }}</option>
+                            <option value="{{ $order->id }}" {{ $wash->order_id == $order->id ? 'selected' : '' }}>{{ $order->style_no }}</option>
                         @endforeach
                     </select>
                     <span class="error text-red-500 text-xs mt-1 block"></span>
@@ -38,30 +38,30 @@
                         class="w-full border mt-3 outline-[#99c041] border-gray-300 px-3 py-2 rounded-xl focus:ring-[#99c041] focus:border-[#99c041] transition">
                         <option value="" class="text-gray-300">Select...</option>
                         @foreach ($types as $type)
-                            <option value="{{ $type->name }}" {{ $embroideryPrint->garment_type == $type->name ? 'selected' : '' }}>{{ $type->name }}</option>
+                            <option value="{{ $type->name }}" {{ $wash->garment_type == $type->name ? 'selected' : '' }}>{{ $type->name }}</option>
                         @endforeach
                     </select>
                     <span class="error text-red-500 text-xs mt-1 block"></span>
                 </div>
                 <div class="mb-4">
                     <label class="font-semibold">Date</label>
-                    <input type="date" name="date" value="{{ $embroideryPrint->date }}" id="date" class="w-full border mt-3 outline-[#99c041] border-gray-300 px-3 py-2 rounded-xl focus:ring-[#99c041] focus:border-[#99c041] transition">
+                    <input type="date" name="date" value="{{ $wash->date }}" id="date" class="w-full border mt-3 outline-[#99c041] border-gray-300 px-3 py-2 rounded-xl focus:ring-[#99c041] focus:border-[#99c041] transition">
                     <span class="error text-red-500 text-xs mt-1 block"></span>
                 </div>
 
                 <div id="add-fields" class="space-y-2 mb-4">
-                    <label for="style_no" class="font-semibold">Embroidery or Print</label>
+                    <label for="style_no" class="font-semibold">Wash Report</label>
                     @php $index = 0; @endphp
-                    @foreach ($embroideryPrint->emb_or_print as $row)
+                    @foreach ($wash->wash as $row)
                     <div class="mb-4">
                         <div class="flex gap-2 items-center">
-                            <input type="text" name="embroidery_or_print[{{ $index }}][color]" value="{{ $row['color'] }}"
+                            <input type="text" name="wash[{{ $index }}][color]" value="{{ $row['color'] }}"
                                 placeholder="Color"
                                 class="border border-gray-300 outline-[#99c041] rounded-xl px-3 py-2 w-2/3" />
-                            <input type="number" min="0" name="embroidery_or_print[{{ $index }}][send]" value="{{ $row['send'] ?? null }}"
+                            <input type="number" min="0" name="wash[{{ $index }}][send]" value="{{ $row['send'] ?? null }}"
                                 placeholder="Send"
                                 class="border border-gray-300 outline-[#99c041] rounded-xl px-3 py-2 w-1/3" />
-                                <input type="number" min="0" name="embroidery_or_print[{{ $index }}][receive]" value="{{ $row['receive'] ?? null }}"
+                                <input type="number" min="0" name="wash[{{ $index }}][receive]" value="{{ $row['receive'] ?? null }}"
                                 placeholder="Receive"
                                 class="border border-gray-300 outline-[#99c041] rounded-xl px-3 py-2 w-1/3" />
                             <button type="button"
@@ -81,7 +81,7 @@
 
                 <!-- Buttons -->
                 <div class="flex items-center gap-4 mt-5">
-                    <a href="{{ route('embroidery_prints.index') }}"
+                    <a href="{{ route('washes.index') }}"
                         class="bg-red-400 cursor-pointer hover:bg-red-500 text-white px-4 py-2 rounded-xl">
                         <i class="fa-regular fa-xmark pe-1"></i> Cancel
                     </a>
@@ -98,7 +98,7 @@
 
     @push('scripts')
         <script>
-           let embroideryIndex = {{ count($embroideryPrint->emb_or_print) }};
+           let washIndex = {{ count($wash->wash) }};
 
             document.getElementById('add-row').addEventListener('click', function() {
                 const fields = document.getElementById('add-fields');
@@ -106,18 +106,18 @@
                 div.className = 'flex gap-2 items-center';
 
                 div.innerHTML = `
-        <input type="text" name="embroidery_or_print[${embroideryIndex}][color]" placeholder="Color"
+        <input type="text" name="wash[${washIndex}][color]" placeholder="Color"
             class="border border-gray-300 outline-[#99c041] rounded-xl px-3 py-2 w-2/3" />
-        <input type="number" min="0" name="embroidery_or_print[${embroideryIndex}][send]" placeholder="Send"
+        <input type="number" min="0" name="wash[${washIndex}][send]" placeholder="Send"
             class="border border-gray-300 outline-[#99c041] rounded-xl px-3 py-2 w-1/3" />
-        <input type="number" min="0" name="embroidery_or_print[${embroideryIndex}][receive]" placeholder="Receive"
+        <input type="number" min="0" name="wash[${washIndex}][receive]" placeholder="Receive"
             class="border border-gray-300 outline-[#99c041] rounded-xl px-3 py-2 w-1/3" />
         <button type="button" class="remove-row bg-red-500 text-white rounded-xl px-2 py-1 ml-2 size-10 cursor-pointer">
             &times;
         </button>
     `;
                 fields.appendChild(div);
-                embroideryIndex++;
+                washIndex++;
                 updateRemoveButtons();
             });
 

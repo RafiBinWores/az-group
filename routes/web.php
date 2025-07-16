@@ -10,6 +10,7 @@ use App\Http\Controllers\GarmentTypeController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\WashController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -100,9 +101,21 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/garment-types', 'index')->name('garment_types.index');
         Route::get('/garment-types/create', 'create')->name('garment_types.create');
         Route::post('/garment-types', 'store')->name('garment_types.store');
-         Route::post('/garment-types/update-status', 'updateStatus')->name('garment_types.updateStatus');
+        Route::post('/garment-types/update-status', 'updateStatus')->name('garment_types.updateStatus');
         Route::get('/garment-types/{garment_type}/edit', 'edit')->name('garment_types.edit');
         Route::put('/garment-types/{garment_type}', 'update')->name('garment_types.update');
         Route::delete('/garment-types/{garment_type}', 'destroy')->name('garment_types.destroy');
+    });
+
+    // Wash routes
+    Route::controller(WashController::class)->group(function () {
+        Route::get('/washes', 'index')->name('washes.index');
+        Route::get('/washes/create', 'create')->name('washes.create');
+        Route::post('/washes', 'store')->name('washes.store');
+        Route::get('/washes/{wash}/show', 'show')->name('washes.show');
+        Route::get('/washes/{wash}/edit', 'edit')->name('washes.edit');
+        Route::put('/washes/{wash}', 'update')->name('washes.update');
+        Route::delete('/washes/{wash}', 'destroy')->name('washes.destroy');
+        Route::get('/washes/{wash}/export', 'export')->name('washes.export');
     });
 });
