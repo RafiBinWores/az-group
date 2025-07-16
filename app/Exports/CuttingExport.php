@@ -27,7 +27,7 @@ class CuttingExport implements FromCollection, WithHeadings, WithEvents, WithTit
         foreach ($this->cutting->cutting as $row) {
             $rows[] = [
                 'Serial No' => $serial++,
-                'Order Style No' => $this->cutting->order->style_no ?? 'N/A',
+                'Style No' => $this->cutting->order->style_no ?? 'N/A',
                 'Color' => $row['color'],
                 'Quantity' => $row['qty'],
                 'Remarks' => $row['remarks'] ?? '',
@@ -38,7 +38,7 @@ class CuttingExport implements FromCollection, WithHeadings, WithEvents, WithTit
         // Add Total row at the end
         $rows[] = [
             'Serial No' => '',
-            'Order Style No' => '',
+            'Style No' => '',
             'Color' => 'Total',
             'Quantity' => $totalQty,
             'Remarks' => '',
@@ -49,14 +49,14 @@ class CuttingExport implements FromCollection, WithHeadings, WithEvents, WithTit
 
     public function headings(): array
     {
-        $date = Carbon::parse($this->cutting->created_at)->format('d-m-Y');
+        $date = Carbon::parse($this->cutting->date)->format('d-m-Y');
         return [
             ['A.Z Group'],
             ['295/Ja/4/A Rayer Bazar, Dhaka-1209'],
             ['Daily Cutting Report'],
             [],
             ['', '', '', '', 'Date: ' . $date],
-            ['Serial No', 'Order Style No', 'Color', 'Cutting', 'Remarks'],
+            ['Serial No', 'Style No', 'Color', 'Cutting', 'Remarks'],
         ];
     }
 

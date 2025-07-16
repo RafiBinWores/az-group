@@ -22,6 +22,7 @@
                         <th class="px-4 py-3 text-left font-semibold text-gray-700">Style No</th>
                         <th class="px-4 py-3 text-left font-semibold text-gray-700">Garment Type</th>
                         <th class="px-4 py-3 text-left font-semibold text-gray-700">Total Cutting</th>
+                        <th class="px-4 py-3 text-left font-semibold text-gray-700">Date</th>
                         <th class="px-4 py-3 text-left font-semibold text-gray-700">Actions</th>
                     </tr>
                 </thead>
@@ -36,6 +37,7 @@
                             <td class="px-4 py-2">{{ $cutting->order->style_no ?? 'N/A' }}</td>
                             <td class="px-4 py-2">{{ $cutting->garment_type ?? 'N/A' }}</td>
                             <td class="px-4 py-2 font-bold text-green-600">{{ $totalQty }}</td>
+                            <td class="px-4 py-2">{{ \Carbon\Carbon::parse($cutting->date)->format('M d, Y') }}</td>
                             <td class="px-4 py-2 flex gap-5 items-center">
                                 <a class="text-blue-500 rounded-full" href="{{ route('cutting.export', $cutting->id) }}"><i class="fa-regular fa-file-xls"></i></a>
                                 <a class="text-yellow-500 rounded-full" href="{{ route('cutting.show', $cutting->id) }}"><i
