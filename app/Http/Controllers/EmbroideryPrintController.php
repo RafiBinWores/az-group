@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\EmbroideryPrintReportExport;
 use App\Models\EmbroideryPrint;
 use App\Models\GarmentType;
 use App\Models\Order;
@@ -69,7 +70,7 @@ class EmbroideryPrintController extends Controller
             ]);
         }
 
-        // Create Cutting report
+        // Create report
         EmbroideryPrint::create([
             'order_id' => $request->order_id,
             'emb_or_print' => $request->embroidery_or_print,
@@ -89,9 +90,9 @@ class EmbroideryPrintController extends Controller
     public function show($embroidery_print)
     {
 
-        $embroideryPrints = EmbroideryPrint::with('order')->findOrFail($embroidery_print);
+        $embroideryPrint = EmbroideryPrint::with('order')->findOrFail($embroidery_print);
 
-        return view('embroidery-print.show', compact('embroideryPrints'));
+        return view('embroidery-print.show', compact('embroideryPrint'));
     }
 
     /**
@@ -191,10 +192,11 @@ class EmbroideryPrintController extends Controller
     }
 
     // Excel download
-    public function export($cutting)
+    public function export($embroidery_print)
     {
-        $cutting = EmbroideryPrint::with('order')->findOrFail($cutting);
-        $filename = 'cutting_' . $cutting->order->style_no . '_' . now()->format('Ymd_His') . '.xlsx';
-        return Excel::download(new CuttingExport($cutting), $filename);
+        $embroideryPrint = EmbroideryPrint::with('order')->findOrFail($embroidery_print);
+        $fileName = 'embroidery_or_print_report_' . $embroideryPrint->order->style_no . '_' . now()->format('Ymd_His') . '.xlsx';
+
+        return Excel::download(new EmbroideryPrintReportExport($embroideryPrint), $fileName);
     }
 }

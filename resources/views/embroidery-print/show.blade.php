@@ -1,10 +1,10 @@
 <x-layouts.app>
     {{-- Page title --}}
-    <x-slot name="title">Cutting details | AZ Group</x-slot>
+    <x-slot name="title">Embroidery/Print details | AZ Group</x-slot>
     {{-- Page title end --}}
 
     {{-- Page header --}}
-    <x-slot name="header">Cutting details</x-slot>
+    <x-slot name="header">Embroidery/Print details</x-slot>
     {{-- Page header end --}}
 
     {{-- Notifications --}}
@@ -15,17 +15,20 @@
         <div class="border-b border-gray-200">
             <div class="flex items-center justify-between px-6 py-4">
                 <div class="text-gray-700 font-semibold text-lg">
-                    Style No : <span class="text-[#99c041]">{{ $cutting->order->style_no }}</span>
-                    <p class="text-sm">Date: <span class="font-normal">{{ $cutting->created_at->format('d-m-Y') }}
+                    Style No : <span class="text-[#99c041]">{{ $embroideryPrint->order->style_no }}</span>
+                    <p class="text-sm mb-3 mt-1">Garment Type: <span
+                            class="font-normal">{{ $embroideryPrint->garment_type }}
+                        </span></p>
+                    <p class="text-sm">Date: <span class="font-normal">{{ $embroideryPrint->date }}
                         </span></p>
                 </div>
                 <div class="flex items-center gap-2">
-                    <a href="{{ route('cutting.export', $cutting->id) }}"
+                    <a href="{{ route('cutting.export', $embroideryPrint->id) }}"
                         class="inline-block px-4 py-2 bg-sky-500 rounded hover:bg-sky-700 duration-200">
                         <i class="fa-regular fa-file-xls text-white"></i>
                     </a>
                     <a class="bg-green-500 px-4 py-2 rounded hover:bg-green-600 duration-200"
-                        href="{{ route('cutting.edit', $cutting->id) }}"><i
+                        href="{{ route('embroidery_prints.edit', $embroideryPrint->id) }}"><i
                             class="fa-regular fa-pen text-white"></i></a>
                 </div>
             </div>
@@ -42,29 +45,48 @@
                             Color
                         </th>
                         <th scope="col" class="px-6 py-3">
-                            Quantity
+                            Send
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            Received
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            Balance
                         </th>
                     </tr>
                 </thead>
                 @php
-                    $totalQty = collect($cutting->cutting)->sum('qty');
+                    $totalSend = collect($embroideryPrint->emb_or_print ?? [])->sum('send');
+                    $totalReceive = collect($embroideryPrint->emb_or_print ?? [])->sum('receive');
+                    $totalBalance = collect($embroideryPrint->emb_or_print ?? [])->sum(function ($row) {
+                        return ($row['send'] ?? 0) - ($row['receive'] ?? 0);
+                    });
                 @endphp
 
                 <tbody>
-                    @foreach ($cutting->cutting as $row)
+                    @foreach ($embroideryPrint->emb_or_print as $row)
                         <tr class="border-b border-gray-200">
                             <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
                                 {{ $row['color'] }}
                             </td>
                             <td class="px-6 py-4">
-                                {{ $row['qty'] }}
+                                {{ $row['send'] }}
+                            </td>
+                            <td class="px-6 py-4">
+                                {{ $row['receive'] }}
+                            </td>
+                            <td class="px-6 py-4">
+                                {{ ($row['send'] ?? 0) - ($row['receive'] ?? 0) }}
+
                             </td>
                         </tr>
                     @endforeach
                     {{-- Total Row --}}
                     <tr class="font-bold">
                         <td class="px-6 py-4 text-center">Total</td>
-                        <td class="px-6 py-4">{{ $totalQty }}</td>
+                        <td class="px-6 py-4">{{ $totalSend }}</td>
+                        <td class="px-6 py-4">{{ $totalReceive }}</td>
+                        <td class="px-6 py-4">{{ $totalBalance }}</td>
                     </tr>
                 </tbody>
             </table>

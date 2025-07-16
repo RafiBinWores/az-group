@@ -21,8 +21,8 @@
                         <th class="px-4 py-3 text-left font-semibold text-gray-700">ID</th>
                         <th class="px-4 py-3 text-left font-semibold text-gray-700">Style No</th>
                         <th class="px-4 py-3 text-left font-semibold text-gray-700">Garment Type</th>
-                        <th class="px-4 py-3 text-left font-semibold text-gray-700">Send</th>
-                        <th class="px-4 py-3 text-left font-semibold text-gray-700">Receive</th>
+                        <th class="px-4 py-3 text-left font-semibold text-gray-700">Total Send</th>
+                        <th class="px-4 py-3 text-left font-semibold text-gray-700">Total Receive</th>
                         <th class="px-4 py-3 text-left font-semibold text-gray-700">Date</th>
                         <th class="px-4 py-3 text-left font-semibold text-gray-700">Actions</th>
                     </tr>

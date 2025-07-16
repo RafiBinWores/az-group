@@ -81,7 +81,7 @@
 
                 <!-- Buttons -->
                 <div class="flex items-center gap-4 mt-5">
-                    <a href="{{ route('garment_types.index') }}"
+                    <a href="{{ route('embroidery_prints.index') }}"
                         class="bg-red-400 cursor-pointer hover:bg-red-500 text-white px-4 py-2 rounded-xl">
                         <i class="fa-regular fa-xmark pe-1"></i> Cancel
                     </a>
