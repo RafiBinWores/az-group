@@ -9,13 +9,13 @@ use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithTitle;
 use Maatwebsite\Excel\Events\AfterSheet;
 
-class CuttingExport implements FromCollection, WithHeadings, WithEvents, WithTitle
+class OrderReportExport implements FromCollection, WithHeadings, WithEvents, WithTitle
 {
-    protected $cutting;
+    protected $order;
 
-    public function __construct($cutting)
+    public function __construct($order)
     {
-        $this->cutting = $cutting;
+        $this->order = $order;
     }
 
     public function collection()
@@ -23,18 +23,16 @@ class CuttingExport implements FromCollection, WithHeadings, WithEvents, WithTit
         $rows = [];
         $serial = 1;
         $orderQty = 0;
-        $cuttingQty = 0;
-        foreach ($this->cutting->cutting as $row) {
+        // Use color_qty if that's your JSON/array field
+        foreach ($this->order->color_qty ?? [] as $row) {
             $rows[] = [
                 'Serial No' => $serial++,
-                'Style No' => $this->cutting->order->style_no ?? 'N/A',
-                'Color' => $row['color'],
-                'Order Quantity' => $row['order_qty'],
-                'Cutting Quantity' => $row['cutting_qty'],
+                'Style No' => $this->order->style_no ?? 'N/A',
+                'Color' => $row['color'] ?? '',
+                'Order Quantity' => $row['qty'] ?? 0,
                 'Remarks' => $row['remarks'] ?? '',
             ];
-            $orderQty += (int) $row['order_qty'];
-            $cuttingQty += (int) $row['cutting_qty'];
+            $orderQty += (int) ($row['qty'] ?? 0);
         }
 
         // Add Total row at the end
@@ -43,7 +41,6 @@ class CuttingExport implements FromCollection, WithHeadings, WithEvents, WithTit
             'Style No' => '',
             'Color' => 'Total',
             'Order Quantity' => $orderQty,
-            'Cutting Quantity' => $cuttingQty,
             'Remarks' => '',
         ];
 
@@ -52,14 +49,19 @@ class CuttingExport implements FromCollection, WithHeadings, WithEvents, WithTit
 
     public function headings(): array
     {
-        $date = Carbon::parse($this->cutting->date)->format('d-m-Y');
+        $date = $this->order->created_at
+            ? Carbon::parse($this->order->created_at)->format('d-m-Y')
+            : '';
+        // Render garment types as comma-separated
+        $garmentTypes = $this->order->garmentTypes->pluck('name')->join(', ') ?: 'N/A';
+
         return [
             ['A.Z Group'],
             ['295/Ja/4/A Rayer Bazar, Dhaka-1209'],
-            ['Daily Cutting Report'],
-            [],
-            ['', '', '', '','', 'Date: ' . $date],
-            ['Serial No', 'Style No', 'Color','Order Quantity', 'Cutting Quantity', 'Remarks'],
+            ['Order Report'],
+            ["Garment Types: {$garmentTypes}"], // New garment types header row
+            ['', '', '', '', 'Date: ' . $date],
+            ['Serial No', 'Style No', 'Color', 'Order Quantity', 'Remarks'],
         ];
     }
 
@@ -68,10 +70,10 @@ class CuttingExport implements FromCollection, WithHeadings, WithEvents, WithTit
         return [
             AfterSheet::class => function(AfterSheet $event) {
                 // Merge and style headers
-                foreach(['A1:F1','A2:F2','A3:F3'] as $range) {
+                foreach(['A1:E1','A2:E2','A3:E3','A4:E4'] as $range) {
                     $event->sheet->mergeCells($range);
                 }
-                foreach(['A1','A2','A3'] as $cell) {
+                foreach(['A1','A2','A3','A4'] as $cell) {
                     $event->sheet->getStyle($cell)->applyFromArray([
                         'font' => [
                             'bold' => true,
@@ -82,28 +84,23 @@ class CuttingExport implements FromCollection, WithHeadings, WithEvents, WithTit
                         ],
                     ]);
                 }
-                $event->sheet->getStyle('E4')->applyFromArray([
-                    'alignment' => [
-                        'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT,
-                    ],
-                ]);
-                $event->sheet->getStyle('F5')->applyFromArray([
+                $event->sheet->getStyle('E5')->applyFromArray([
                     'font' => ['bold' => true],
                     'alignment' => [
                         'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT,
                     ],
                 ]);
-                $event->sheet->getStyle('A6:F6')->applyFromArray([
+                $event->sheet->getStyle('A6:E6')->applyFromArray([
                     'font' => ['bold' => true],
                     'alignment' => [
                         'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
                     ],
                 ]);
                 // Borders for table
-                $rowCount = count($this->cutting->cutting);
+                $rowCount = count($this->order->color_qty ?? []);
                 $totalRow = 6 + $rowCount + 1; // 6 heading rows, then data, then total row
                 $lastRow = $totalRow;
-                $cellRange = "A6:F{$lastRow}";
+                $cellRange = "A6:E{$lastRow}";
                 $event->sheet->getStyle($cellRange)->applyFromArray([
                     'borders' => [
                         'allBorders' => [
@@ -112,7 +109,7 @@ class CuttingExport implements FromCollection, WithHeadings, WithEvents, WithTit
                         ],
                     ],
                 ]);
-                // Bold the total row
+                // Bold the total row (A to E)
                 $event->sheet->getStyle("A{$totalRow}:E{$totalRow}")->applyFromArray([
                     'font' => [
                         'bold' => true,
@@ -124,6 +121,6 @@ class CuttingExport implements FromCollection, WithHeadings, WithEvents, WithTit
 
     public function title(): string
     {
-        return 'Cutting Report';
+        return 'Order Report';
     }
 }

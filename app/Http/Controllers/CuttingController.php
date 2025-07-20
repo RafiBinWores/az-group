@@ -17,7 +17,7 @@ class CuttingController extends Controller
      */
     public function index()
     {
-        $cuttings = Cutting::with('order')->get();
+        $cuttings = Cutting::with('order')->latest()->get();
 
         return view('cutting.view', compact('cuttings'));
     }
@@ -27,12 +27,9 @@ class CuttingController extends Controller
      */
     public function create()
     {
-        $orders = Order::get(['id', 'style_no']);
-        $types = GarmentType::where('status', 1)
-            ->orderBy('name', 'ASC')
-            ->get(['name']);
+        $orders = Order::with('garmentTypes')->get();
 
-        return view('cutting.create', compact('orders', 'types'));
+        return view('cutting.create', compact('orders'));
     }
 
     /**
@@ -43,14 +40,25 @@ class CuttingController extends Controller
 
         $validator = Validator::make($request->all(), [
             'order_id' => 'required|numeric',
-            'garment_type' => 'required|string',
+            'garment_type' => 'required|exists:garment_types,name',
             'date' => 'required|date',
             'cutting' => 'required|array|min:1',
-            'cutting.*.color' => 'required|string',
-            'cutting.*.qty' => 'required',
+            'cutting.*.color' => 'nullable|string',
+            'cutting.*.qty' => 'nullable',
         ], [
             'order_id.required' => 'The style no field is required.',
         ]);
+
+        // Add custom validation logic before checking fails
+        $validator->after(function ($validator) use ($request) {
+            $exists = Cutting::where('order_id', $request->order_id)
+                ->where('garment_type', $request->garment_type)
+                ->where('date', $request->date)
+                ->exists();
+            if ($exists) {
+                $validator->errors()->add('date', 'A report for this style, garment type, and date already exists.');
+            }
+        });
 
         // error messages
         if ($validator->fails()) {
@@ -79,7 +87,7 @@ class CuttingController extends Controller
      */
     public function show($cutting)
     {
-        $cutting = Cutting::with('order')->findOrFail($cutting);
+        $cutting = Cutting::with('order.garmentTypes')->findOrFail($cutting);
 
         return view('cutting.show', compact('cutting'));
     }
@@ -89,16 +97,10 @@ class CuttingController extends Controller
      */
     public function edit($cutting)
     {
-        $cutting = Cutting::with('order')
-            ->findOrFail($cutting);
-
-        $orders = Order::get(['id', 'style_no']);
-
-        $types = GarmentType::where('status', 1)
-            ->orderBy('name', 'ASC')
-            ->get(['name']);
-
-        return view('cutting.edit', compact('cutting', 'orders', 'types'));
+        $cutting = Cutting::findOrFail($cutting);
+        $orders = Order::with(['garmentTypes'])->get();
+        
+        return view('cutting.edit', compact('cutting', 'orders'));
     }
 
     /**

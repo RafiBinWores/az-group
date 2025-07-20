@@ -13,7 +13,12 @@ class Order extends Model
         'user_id',
         'buyer_name',
         'style_no',
-        'order_qty'
+        'order_qty',
+        'color_qty'
+    ];
+
+    protected $casts = [
+        'color_qty' => 'array',
     ];
 
     protected $dates = ['deleted_at'];
@@ -22,5 +27,10 @@ class Order extends Model
     public function cuttings()
     {
         return $this->hasMany(Cutting::class);
+    }
+
+    public function garmentTypes()
+    {
+        return $this->belongsToMany(GarmentType::class);
     }
 }

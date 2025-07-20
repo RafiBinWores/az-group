@@ -15,12 +15,13 @@
     <div class="bg-white shadow-sm font-ibm p-8 w-full rounded-lg mt-4">
 
         <div class="p-6 bg-white rounded-lg">
-            <table id="cutting-table" class="min-w-full divide-y text-sm overflow-x-scroll">
+            <table id="cutting-table" class="min-w-full divide-y text-sm">
                 <thead>
                     <tr>
                         <th class="px-4 py-3 text-left font-semibold text-gray-700">ID</th>
                         <th class="px-4 py-3 text-left font-semibold text-gray-700">Style No</th>
                         <th class="px-4 py-3 text-left font-semibold text-gray-700">Garment Type</th>
+                        <th class="px-4 py-3 text-left font-semibold text-gray-700">Order Quantity</th>
                         <th class="px-4 py-3 text-left font-semibold text-gray-700">Total Cutting</th>
                         <th class="px-4 py-3 text-left font-semibold text-gray-700">Date</th>
                         <th class="px-4 py-3 text-left font-semibold text-gray-700">Actions</th>
@@ -29,7 +30,8 @@
                 <tbody>
                     @foreach ($cuttings as $cutting)
                         @php
-                            $totalQty = collect($cutting->cutting)->sum('qty');
+                            $totalCutting = collect($cutting->cutting)->sum('cutting_qty');
+                            $totalQty = collect($cutting->cutting)->sum('order_qty');
                         @endphp
 
                         <tr class="border-b-gray-400" data-order-id="{{ $cutting->id }}">
@@ -37,10 +39,14 @@
                             <td class="px-4 py-2">{{ $cutting->order->style_no ?? 'N/A' }}</td>
                             <td class="px-4 py-2">{{ $cutting->garment_type ?? 'N/A' }}</td>
                             <td class="px-4 py-2 font-bold text-green-600">{{ $totalQty }}</td>
+                            <td class="px-4 py-2 font-bold text-green-600">{{ $totalCutting }}</td>
                             <td class="px-4 py-2">{{ \Carbon\Carbon::parse($cutting->date)->format('M d, Y') }}</td>
                             <td class="px-4 py-2 flex gap-5 items-center">
-                                <a class="text-blue-500 rounded-full" href="{{ route('cutting.export', $cutting->id) }}"><i class="fa-regular fa-file-xls"></i></a>
-                                <a class="text-yellow-500 rounded-full" href="{{ route('cutting.show', $cutting->id) }}"><i
+                                <a class="text-blue-500 rounded-full"
+                                    href="{{ route('cutting.export', $cutting->id) }}"><i
+                                        class="fa-regular fa-file-xls"></i></a>
+                                <a class="text-yellow-500 rounded-full"
+                                    href="{{ route('cutting.show', $cutting->id) }}"><i
                                         class="fa-regular fa-eye"></i></a>
                                 <a class="text-green-600" href="{{ route('cutting.edit', $cutting->id) }}"><i
                                         class="fa-regular fa-pen"></i></a>
@@ -63,6 +69,11 @@
             $(document).ready(function() {
                 let table = $("#cutting-table").DataTable({
                     responsive: true,
+                    order: [
+                        [0, "desc"]
+                    ],
+                    scrollY: 'calc(100vh - 330px)', 
+                    scrollCollapse: true,
                     scrollX: true,
                     language: {
                         search: "_INPUT_",

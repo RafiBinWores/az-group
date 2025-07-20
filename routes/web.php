@@ -67,9 +67,11 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/orders', 'index')->name('orders.index');
         Route::get('/orders/create', 'create')->name('orders.create');
         Route::post('/orders', 'store')->name('orders.store');
+        Route::get('/orders/{order}/show', 'show')->name('orders.show');
         Route::get('/orders/{order}/edit', 'edit')->name('orders.edit');
         Route::put('/orders/{order}', 'update')->name('orders.update');
         Route::delete('/orders/{order}', 'destroy')->name('orders.destroy');
+        Route::get('/orders-report/{order}/export', 'export')->name('orders.export');
     });
 
     // Cutting routes

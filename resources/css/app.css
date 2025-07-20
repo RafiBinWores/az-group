@@ -122,3 +122,11 @@
     background: #fff !important;
     box-shadow: none !important;
 }
+
+.ts-dropdown, .ts-control, .ts-control input{
+    font-size: 16px;
+    padding: 4px;
+}
+.ts-control{
+    border: none;
+}

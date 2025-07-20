@@ -21,7 +21,7 @@
                         <th class="px-4 py-3 text-left font-semibold text-gray-700">ID</th>
                         <th class="px-4 py-3 text-left font-semibold text-gray-700">Buyer Name</th>
                         <th class="px-4 py-3 text-left font-semibold text-gray-700">Style No</th>
-                        <th class="px-4 py-3 text-left font-semibold text-gray-700">Order Quantity</th>
+                        <th class="px-4 py-3 text-left font-semibold text-gray-700">Total Quantity</th>
                         <th class="px-4 py-3 text-left font-semibold text-gray-700">Actions</th>
                     </tr>
                 </thead>
@@ -33,14 +33,19 @@
                             <td class="px-4 py-2">{{ $order->style_no }}</td>
                             <td class="px-4 py-2">{{ $order->order_qty }}</td>
                             <td class="px-4 py-2 flex gap-5 items-center">
+                                <a class="text-blue-500 rounded-full"
+                                    href="{{ route('orders.export', $order->id) }}"><i
+                                        class="fa-regular fa-file-xls"></i></a>
+                                <a class="text-yellow-500 rounded-full" href="{{ route('orders.show', $order->id) }}"><i
+                                        class="fa-regular fa-eye"></i></a>
                                 @can('update', $order)
                                     <a class="text-green-600" href="{{ route('orders.edit', $order->id) }}"><i
-                                        class="fa-regular fa-pen"></i></a>
+                                            class="fa-regular fa-pen"></i></a>
                                 @endcan
                                 @can('delete', $order)
                                     <button class="delete-order-btn text-red-500 hover:text-red-700 cursor-pointer"
-                                    data-id="{{ $order->id }}" title="Delete"><i
-                                        class="fa-regular fa-trash"></i></button>
+                                        data-id="{{ $order->id }}" title="Delete"><i
+                                            class="fa-regular fa-trash"></i></button>
                                 @endcan
                             </td>
                         </tr>
@@ -56,6 +61,11 @@
             $(document).ready(function() {
                 let table = $("#orders-table").DataTable({
                     responsive: true,
+                    order: [
+                        [0, "desc"]
+                    ],
+                    scrollY: 'calc(100vh - 330px)',
+                    scrollCollapse: true,
                     scrollX: true,
                     language: {
                         search: "_INPUT_",
@@ -75,7 +85,9 @@
                     searchWrapper.append(addBtn);
                     // On mobile: vertical (col) and centered, on lg+ horizontal (row)
                     searchWrapper.removeClass("flex-col flex-row items-center justify-center");
-                    searchWrapper.addClass("flex flex-col gap-2 justify-center items-center lg:flex-row lg:items-center lg:justify-start");
+                    searchWrapper.addClass(
+                        "flex flex-col gap-2 justify-center items-center lg:flex-row lg:items-center lg:justify-start"
+                    );
                 }, 200);
 
                 // Delete order with custom modal

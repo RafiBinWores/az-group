@@ -4,7 +4,6 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    {{-- <meta name="viewport" content="width=device-width" /> --}}
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ $title ?? 'AZ Group' }}</title>
     <link rel="shortcut icon" href="{{ asset('assets/images/favicon.png') }}" type="image/x-icon" />
@@ -19,9 +18,13 @@
     <link rel="stylesheet" href="{{ asset('assets/js/libs/dataTables/dataTables.min.css') }}">
 
     {{-- Flat Icon --}}
-    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/3.0.0/uicons-regular-rounded/css/uicons-regular-rounded.css'>
+    <link rel='stylesheet'
+        href='https://cdn-uicons.flaticon.com/3.0.0/uicons-regular-rounded/css/uicons-regular-rounded.css'>
 
-    <script src="./node_modules/preline/dist/preline.js"></script>
+
+    {{-- tom select --}}
+    <link defer href="https://cdn.jsdelivr.net/npm/tom-select@2.4.3/dist/css/tom-select.css" rel="stylesheet">
+    <script defer src="https://cdn.jsdelivr.net/npm/tom-select@2.4.3/dist/js/tom-select.complete.min.js"></script>
 
     <!-- Google Font  -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -62,9 +65,7 @@
     {{-- jQuery --}}
     <script src="{{ asset('assets/js/jquery-3.7.1.min.js') }}"></script>
     {{-- DataTables JS --}}
-    <script src="{{ asset('assets/js/libs/dataTables/dataTables.min.js') }}"></script>
-
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script defer src="{{ asset('assets/js/libs/dataTables/dataTables.min.js') }}"></script>
 
     {{-- Custom js --}}
     @stack('scripts')
