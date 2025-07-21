@@ -31,7 +31,7 @@
                     @foreach ($embroideryPrints as $embroideryPrint)
                         @php
                             $totalSend = collect($embroideryPrint->emb_or_print ?? [])->sum('send');
-                            $totalReceive = collect($embroideryPrint->emb_or_print ?? [])->sum('receive');
+                            $totalReceive = collect($embroideryPrint->emb_or_print ?? [])->sum('received');
 
                         @endphp
                         <tr class="border-b-gray-400" data-order-id="{{ $embroideryPrint->id }}">

@@ -27,10 +27,9 @@ class EmbroideryPrintController extends Controller
      */
     public function create()
     {
-        $orders = Order::get(['id', 'style_no']);
-        $types = GarmentType::get(['name']);
+        $orders = Order::with('garmentTypes')->get();
 
-        return view('embroidery-print.create', compact('orders', 'types'));
+        return view('embroidery-print.create', compact('orders'));
     }
 
     /**
@@ -41,12 +40,13 @@ class EmbroideryPrintController extends Controller
 
         $validator = Validator::make($request->all(), [
             'order_id' => 'required|numeric',
-            'embroidery_or_print' => 'required|array|min:1',
-            'embroidery_or_print.*.color' => 'required|string',
-            'embroidery_or_print.*.send' => 'required',
-            'embroidery_or_print.*.receive' => 'nullable',
-            'date' => 'required|date',
             'garment_type' => 'required|string',
+            'embroidery_print' => 'required|array|min:1',
+            'embroidery_print.*.color' => 'required|string',
+            'embroidery_print.*.factory' => 'nullable|string',
+            'embroidery_print.*.send' => 'nullable',
+            'embroidery_print.*.received' => 'nullable',
+            'date' => 'required|date',
         ], [
             'order_id.required' => 'The style no field is required.',
         ]);
@@ -61,7 +61,6 @@ class EmbroideryPrintController extends Controller
             }
         });
 
-
         // error messages
         if ($validator->fails()) {
             return response()->json([
@@ -73,7 +72,7 @@ class EmbroideryPrintController extends Controller
         // Create report
         EmbroideryPrint::create([
             'order_id' => $request->order_id,
-            'emb_or_print' => $request->embroidery_or_print,
+            'emb_or_print' => $request->embroidery_print,
             'garment_type' => $request->garment_type,
             'date' => $request->date,
         ]);
@@ -100,11 +99,10 @@ class EmbroideryPrintController extends Controller
      */
     public function edit($embroidery_print)
     {
-        $embroideryPrint = EmbroideryPrint::with('order')->findOrFail($embroidery_print);
-        $orders = Order::get(['id', 'style_no']);
-        $types = GarmentType::get(['name']);
-
-        return view('embroidery-print.edit', compact('embroideryPrint', 'orders', 'types'));
+        $embroideryPrint = EmbroideryPrint::findOrFail($embroidery_print);
+        $orders = Order::with(['garmentTypes'])->get();
+        
+        return view('embroidery-print.edit', compact('embroideryPrint', 'orders'));
     }
 
     /**
@@ -114,14 +112,15 @@ class EmbroideryPrintController extends Controller
     {
         $embroideryPrint = EmbroideryPrint::findOrFail($embroidery_print);
 
-        $validator = Validator::make($request->all(), [
+         $validator = Validator::make($request->all(), [
             'order_id' => 'required|numeric',
-            'embroidery_or_print' => 'required|array|min:1',
-            'embroidery_or_print.*.color' => 'required|string',
-            'embroidery_or_print.*.send' => 'required',
-            'embroidery_or_print.*.receive' => 'nullable',
-            'date' => 'required|date',
             'garment_type' => 'required|string',
+            'embroidery_print' => 'required|array|min:1',
+            'embroidery_print.*.color' => 'required|string',
+            'embroidery_print.*.factory' => 'nullable|string',
+            'embroidery_print.*.send' => 'nullable',
+            'embroidery_print.*.received' => 'nullable',
+            'date' => 'required|date',
         ], [
             'order_id.required' => 'The style no field is required.',
         ]);
@@ -147,7 +146,7 @@ class EmbroideryPrintController extends Controller
 
         // Compare the array directly
         $orderChanged = $embroideryPrint->order_id != $request->order_id;
-        $embroideryPrintChanged = $embroideryPrint->emb_or_print != $request->embroidery_or_print;
+        $embroideryPrintChanged = $embroideryPrint->emb_or_print != $request->embroidery_print;
         $dateChanged = $embroideryPrint->date != $request->date;
         $garmentTypeChanged = $embroideryPrint->garment_type != $request->garment_type;
 
@@ -161,7 +160,7 @@ class EmbroideryPrintController extends Controller
         // Update report
         $embroideryPrint->update([
             'order_id' => $request->order_id,
-            'emb_or_print' => $request->embroidery_or_print,
+            'emb_or_print' => $request->embroidery_print,
             'garment_type' => $request->garment_type,
             'date' => $request->date,
         ]);
@@ -195,7 +194,7 @@ class EmbroideryPrintController extends Controller
     public function export($embroidery_print)
     {
         $embroideryPrint = EmbroideryPrint::with('order')->findOrFail($embroidery_print);
-        $fileName = 'embroidery_or_print_report_' . $embroideryPrint->order->style_no . '_' . now()->format('Ymd_His') . '.xlsx';
+        $fileName = 'embroidery_print_report_' . $embroideryPrint->order->style_no . '_' . now()->format('Ymd_His') . '.xlsx';
 
         return Excel::download(new EmbroideryPrintReportExport($embroideryPrint), $fileName);
     }

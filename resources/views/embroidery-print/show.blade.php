@@ -45,6 +45,9 @@
                             Color
                         </th>
                         <th scope="col" class="px-6 py-3">
+                            Factory
+                        </th>
+                        <th scope="col" class="px-6 py-3">
                             Send
                         </th>
                         <th scope="col" class="px-6 py-3">
@@ -57,9 +60,9 @@
                 </thead>
                 @php
                     $totalSend = collect($embroideryPrint->emb_or_print ?? [])->sum('send');
-                    $totalReceive = collect($embroideryPrint->emb_or_print ?? [])->sum('receive');
+                    $totalReceive = collect($embroideryPrint->emb_or_print ?? [])->sum('received');
                     $totalBalance = collect($embroideryPrint->emb_or_print ?? [])->sum(function ($row) {
-                        return ($row['send'] ?? 0) - ($row['receive'] ?? 0);
+                        return ($row['send'] ?? 0) - ($row['received'] ?? 0);
                     });
                 @endphp
 
@@ -69,24 +72,27 @@
                             <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
                                 {{ $row['color'] }}
                             </td>
-                            <td class="px-6 py-4">
-                                {{ $row['send'] }}
+                            <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
+                                {{ $row['factory'] }}
                             </td>
                             <td class="px-6 py-4">
-                                {{ $row['receive'] }}
+                                {{ $row['send'] }} Pcs
                             </td>
                             <td class="px-6 py-4">
-                                {{ ($row['send'] ?? 0) - ($row['receive'] ?? 0) }}
+                                {{ $row['received'] }} Pcs
+                            </td>
+                            <td class="px-6 py-4">
+                                {{ ($row['send'] ?? 0) - ($row['received'] ?? 0) }} Pcs
 
                             </td>
                         </tr>
                     @endforeach
                     {{-- Total Row --}}
                     <tr class="font-bold">
-                        <td class="px-6 py-4 text-center">Total</td>
-                        <td class="px-6 py-4">{{ $totalSend }}</td>
-                        <td class="px-6 py-4">{{ $totalReceive }}</td>
-                        <td class="px-6 py-4">{{ $totalBalance }}</td>
+                        <td class="px-6 py-4 text-center" colspan="2">Total</td>
+                        <td class="px-6 py-4">{{ $totalSend }} Pcs</td>
+                        <td class="px-6 py-4">{{ $totalReceive }} Pcs</td>
+                        <td class="px-6 py-4">{{ $totalBalance }} Pcs</td>
                     </tr>
                 </tbody>
             </table>

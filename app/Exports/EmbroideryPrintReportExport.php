@@ -23,26 +23,30 @@ class EmbroideryPrintReportExport implements FromCollection, WithHeadings, WithE
     {
         $rows = [];
         $serial = 1;
+        $totalOrderQty = 0;
         $totalSend = 0;
         $totalReceive = 0;
         $totalBalance = 0;
 
         foreach ($this->report->emb_or_print as $row) {
+            $orderQty = (int)($row['order_qty'] ?? 0);
             $send = (int)($row['send'] ?? 0);
-            $receive = (int)($row['receive'] ?? 0);
+            $receive = (int)($row['received'] ?? 0);
             $balance = $send - $receive;
 
             $rows[] = [
                 'Serial No'         => $serial++,
-                'Style No'    => $this->report->order->style_no ?? 'N/A',
+                'Style No'          => $this->report->order->style_no ?? 'N/A',
                 'Garment Type'      => $this->report->garment_type ?? 'N/A',
                 'Color'             => $row['color'] ?? '',
+                'Order Quantity'    => $orderQty,
                 'Send'              => $send,
                 'Receive'           => $receive,
                 'Balance'           => $balance,
                 'Remarks'           => $row['remarks'] ?? '',
             ];
 
+            $totalOrderQty += $orderQty;
             $totalSend += $send;
             $totalReceive += $receive;
             $totalBalance += $balance;
@@ -54,6 +58,7 @@ class EmbroideryPrintReportExport implements FromCollection, WithHeadings, WithE
             'Style No' => '',
             'Garment Type'   => '',
             'Color'          => 'Total',
+            'Order Quantity' => $totalOrderQty,
             'Send'           => $totalSend,
             'Receive'        => $totalReceive,
             'Balance'        => $totalBalance,
@@ -71,8 +76,8 @@ class EmbroideryPrintReportExport implements FromCollection, WithHeadings, WithE
             ['295/Ja/4/A Rayer Bazar, Dhaka-1209'],
             ['Embroidery/Print Report'],
             [],
-            ['', '', '', '', '', '', 'Date: ' . $date],
-            ['Serial No', 'Style No', 'Garment Type', 'Color', 'Send', 'Receive', 'Balance', 'Remarks'],
+            ['', '', '', '', '', '', '', '', 'Date: ' . $date],
+            ['Serial No', 'Style No', 'Garment Type', 'Color', 'Order Quantity', 'Send', 'Receive', 'Balance', 'Remarks'],
         ];
     }
 
@@ -81,7 +86,7 @@ class EmbroideryPrintReportExport implements FromCollection, WithHeadings, WithE
         return [
             AfterSheet::class => function(AfterSheet $event) {
                 // Merge and style headers
-                foreach(['A1:H1','A2:H2','A3:H3'] as $range) {
+                foreach(['A1:I1','A2:I2','A3:I3'] as $range) {
                     $event->sheet->mergeCells($range);
                 }
                 foreach(['A1','A2','A3'] as $cell) {
@@ -95,12 +100,13 @@ class EmbroideryPrintReportExport implements FromCollection, WithHeadings, WithE
                         ],
                     ]);
                 }
-                $event->sheet->getStyle('G5')->applyFromArray([
+                $event->sheet->getStyle('I5')->applyFromArray([
+                    'font' => ['bold' => true],
                     'alignment' => [
                         'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT,
                     ],
                 ]);
-                $event->sheet->getStyle('A6:H6')->applyFromArray([
+                $event->sheet->getStyle('A6:I6')->applyFromArray([
                     'font' => ['bold' => true],
                     'alignment' => [
                         'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
@@ -110,7 +116,7 @@ class EmbroideryPrintReportExport implements FromCollection, WithHeadings, WithE
                 $rowCount = count($this->report->emb_or_print);
                 $totalRow = 6 + $rowCount + 1; // 6 heading rows, then data, then total row
                 $lastRow = $totalRow;
-                $cellRange = "A6:H{$lastRow}";
+                $cellRange = "A6:I{$lastRow}";
                 $event->sheet->getStyle($cellRange)->applyFromArray([
                     'borders' => [
                         'allBorders' => [

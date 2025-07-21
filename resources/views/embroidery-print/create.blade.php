@@ -1,11 +1,8 @@
 <x-layouts.app>
     {{-- Page title --}}
-    <x-slot name="title">Create embroidery or print | AZ Group</x-slot>
-    {{-- Page title end --}}
-
+    <x-slot name="title">Create Embroidery/Print | AZ Group</x-slot>
     {{-- Page header --}}
-    <x-slot name="header">Create embroidery or print</x-slot>
-    {{-- Page header end --}}
+    <x-slot name="header">Create Embroidery/Print</x-slot>
 
     {{-- Notifications --}}
     <x-notification.notification-toast />
@@ -17,27 +14,28 @@
         </div>
 
         <div class="p-6 font-ibm">
-            <form action="{{ route('embroidery_prints.store') }}" method="POST" enctype="multipart/form-data">
+            <form id="cutting-form" action="{{ route('embroidery_prints.store') }}" method="POST">
                 @csrf
                 <div class="mb-4">
                     <label class="font-semibold">Style No</label>
-                    <select name="order_id" id="style-select"
+                    <select name="order_id" id="style-select" placeholder="Select a style..." autocomplete="off"
                         class="w-full border mt-3 outline-[#99c041] border-gray-300 px-3 py-2 rounded-xl focus:ring-[#99c041] focus:border-[#99c041] transition">
-                        <option value="" class="text-gray-300">Select a style</option>
+                        <option value="" class="text-gray-300">Select a style...</option>
                         @foreach ($orders as $order)
-                            <option value="{{ $order->id }}">{{ $order->style_no }}</option>
+                            <option value="{{ $order->id }}" data-colors='@json($order->color_qty)'
+                                data-garments='@json($order->garmentTypes->map->only('id', 'name'))'>
+                                {{ $order->style_no }}
+                            </option>
                         @endforeach
                     </select>
                     <span class="error text-red-500 text-xs mt-1 block"></span>
                 </div>
+
                 <div class="mb-4">
                     <label class="font-semibold">Garment Type</label>
                     <select name="garment_type" id="garment_type"
                         class="w-full border mt-3 outline-[#99c041] border-gray-300 px-3 py-2 rounded-xl focus:ring-[#99c041] focus:border-[#99c041] transition">
-                        <option value="" class="text-gray-300">Select...</option>
-                        @foreach ($types as $type)
-                            <option value="{{ $type->name }}">{{ $type->name }}</option>
-                        @endforeach
+                        <option value="">Select...</option>
                     </select>
                     <span class="error text-red-500 text-xs mt-1 block"></span>
                 </div>
@@ -49,28 +47,9 @@
                 </div>
 
                 <div id="add-fields" class="space-y-2 mb-4">
-                    <label class="font-semibold">Embroidery or Print</label>
-                    <div class="flex gap-2 items-center">
-                        <input type="text" name="embroidery_or_print[0][color]" placeholder="Color"
-                            class="border border-gray-300 outline-[#99c041] rounded-xl px-3 py-2 w-2/3" />
-                        <input type="number" min="0" name="embroidery_or_print[0][send]" placeholder="Send"
-                            class="border border-gray-300 outline-[#99c041] rounded-xl px-3 py-2 w-1/3" />
-                        <input type="number" min="0" name="embroidery_or_print[0][receive]"
-                            placeholder="Receive"
-                            class="border border-gray-300 outline-[#99c041] rounded-xl px-3 py-2 w-1/3" />
-                        <button type="button"
-                            class="remove-row bg-red-500 text-white rounded-xl size-10 px-2 py-1 ml-2 hidden">
-                            &times;
-                        </button>
-                    </div>
+                    <label class="font-semibold">Embroidery/Print</label>
                     <span class="error text-red-500 text-xs mt-1 block"></span>
                 </div>
-                <button type="button" id="add-row"
-                    class="mt-2 bg-blue-600 text-white px-4 py-2 rounded-xl shadow cursor-pointer">
-                    + Add
-                </button>
-
-
                 <!-- Buttons -->
                 <div class="flex items-center gap-4 mt-5">
                     <a href="{{ route('embroidery_prints.index') }}"
@@ -83,58 +62,67 @@
                     </button>
                 </div>
             </form>
-
         </div>
-
     </div>
 
     @push('scripts')
         <script>
-            let embroideryIndex = 1; // Because initial is 0
-
-            document.getElementById('add-row').addEventListener('click', function() {
-                const fields = document.getElementById('add-fields');
-                const div = document.createElement('div');
-                div.className = 'flex gap-2 items-center';
-
-                div.innerHTML = `
-        <input type="text" name="embroidery_or_print[${embroideryIndex}][color]" placeholder="Color"
-            class="border border-gray-300 outline-[#99c041] rounded-xl px-3 py-2 w-2/3" />
-        <input type="number" min="0" name="embroidery_or_print[${embroideryIndex}][send]" placeholder="Send"
-            class="border border-gray-300 outline-[#99c041] rounded-xl px-3 py-2 w-1/3" />
-        <input type="number" min="0" name="embroidery_or_print[${embroideryIndex}][receive]" placeholder="Receive"
-            class="border border-gray-300 outline-[#99c041] rounded-xl px-3 py-2 w-1/3" />
-        <button type="button" class="remove-row bg-red-500 text-white rounded-xl px-2 py-1 ml-2 size-10 cursor-pointer">
-            &times;
-        </button>
-    `;
-                fields.appendChild(div);
-                embroideryIndex++;
-                updateRemoveButtons();
+            new TomSelect("#style-select", {
+                create: true,
+                sortField: {
+                    field: "text",
+                    direction: "asc"
+                }
             });
+        </script>
+        <script>
+            // Dynamically update garment types and color fields
+            document.getElementById('style-select').addEventListener('change', function() {
+                // Garment Types
+                let garmentSelect = document.getElementById('garment_type');
+                garmentSelect.innerHTML = '<option value="">Select...</option>';
+                let selected = this.options[this.selectedIndex];
+                let garments = selected.getAttribute('data-garments');
+                if (garments) {
+                    try {
+                        garments = JSON.parse(garments);
+                    } catch (e) {
+                        garments = [];
+                    }
+                    garments.forEach(type => {
+                        garmentSelect.innerHTML += `<option value="${type.name}">${type.name}</option>`;
+                    });
+                }
 
-            document.getElementById('add-fields').addEventListener('click', function(e) {
-                if (e.target.classList.contains('remove-row')) {
-                    e.target.parentNode.remove();
-                    updateRemoveButtons();
+                // Cutting fields
+                const fieldsDiv = document.getElementById('add-fields');
+                fieldsDiv.innerHTML = `<label class="font-semibold">Embroidery/Print</label>
+                    <span class="error text-red-500 text-xs mt-1 block"></span>`;
+                let colors = selected.getAttribute('data-colors');
+                if (colors) {
+                    try {
+                        colors = JSON.parse(colors);
+                    } catch (e) {
+                        colors = [];
+                    }
+                    colors.forEach((row, idx) => {
+                        const div = document.createElement('div');
+                        div.className = 'flex gap-2 items-center mt-2';
+                        div.innerHTML = `
+                            <input type="text" readonly value="${row.color}" class="border border-gray-300 rounded-xl px-3 py-2 w-2/6 bg-gray-100" name="embroidery_print[${idx}][color]">
+                            <input type="number" readonly min="0" placeholder="Order Qty" value="${row.qty}" class="border border-gray-300 bg-gray-100 rounded-xl px-3 py-2 w-1/6" name="embroidery_print[${idx}][order_qty]">
+                            <input type="text" min="0" placeholder="Factory" class="border border-gray-300 rounded-xl px-3 py-2 w-2/6" name="embroidery_print[${idx}][factory]">
+                            <input type="number" min="0" placeholder="Send" class="border border-gray-300 rounded-xl px-3 py-2 w-1/6" name="embroidery_print[${idx}][send]">
+                            <input type="number" min="0" placeholder="Received" class="border border-gray-300 rounded-xl px-3 py-2 w-1/6" name="embroidery_print[${idx}][received]">
+                        `;
+                        fieldsDiv.insertBefore(div, fieldsDiv.querySelector('.error'));
+                    });
                 }
             });
 
-            function updateRemoveButtons() {
-                const rows = document.querySelectorAll('#add-fields .flex');
-                rows.forEach((row, idx) => {
-                    const btn = row.querySelector('.remove-row');
-                    btn.classList.toggle('hidden', rows.length === 1);
-                });
-            }
-
-            // Initialize on page load
-            updateRemoveButtons();
-
-
-            // FOr submit the form
+            // Form submit via AJAX (handles errors for both flat and nested fields)
             $(function() {
-                $("form").on("submit", function(event) {
+                $("#cutting-form").on("submit", function(event) {
                     event.preventDefault();
                     let form = $(this);
                     let formData = new FormData(this);
@@ -155,44 +143,57 @@
                             if (response.status) {
                                 showToast(
                                     "success",
-                                    response.message || "User created successfully"
+                                    response.message ||
+                                    "Embroidery/Print report created successfully"
                                 );
-                                // Optionally redirect after success:
-                                // setTimeout(function() { window.location.href = "{{ route('users.index') }}"; }, 1200);
+                                // Optionally reload or redirect
                             } else {
-                                let errors = response.errors || {};
-
-                                // Clear previous errors
-                                $(".error").html("");
-                                $("input, select").removeClass("border-red-500");
-
-                                $.each(errors, function(key, value) {
-                                    value = Array.isArray(value) ? value[0] : value;
-                                    let inputField = $(`[name='${key}']`);
-                                    let errorField = inputField
-                                        .closest(".mb-4")
-                                        .find(".error")
-                                        .first();
-                                    inputField.addClass("border-red-500");
-                                    errorField.html(value);
-                                });
-
-                                // Remove error classes/messages on change
-                                $("input, select").on("input change", function() {
-                                    $(this)
-                                        .removeClass("border-red-500")
-                                        .closest(".mb-4")
-                                        .find(".error")
-                                        .html("");
-                                });
+                                displayFieldErrors(response.errors || {});
                             }
                         },
-                        error: function() {
+                        error: function(xhr) {
                             $('button[type="submit"]').prop("disabled", false);
-                            showToast("error", "Something went wrong. Please try again.");
+                            if (xhr.status === 422 && xhr.responseJSON && xhr.responseJSON.errors) {
+                                displayFieldErrors(xhr.responseJSON.errors);
+                            } else {
+                                showToast("error", "Something went wrong. Please try again.");
+                            }
                         },
                     });
                 });
+
+                // Error rendering function
+                function displayFieldErrors(errors) {
+                    $(".error").html("");
+                    $("input, select").removeClass("border-red-500");
+
+                    $.each(errors, function(key, value) {
+                        // Convert array field names (dot notation) to correct selector
+                        let name = key.replace(/\./g, "][");
+                        let fieldSelector = `[name='${name}']`;
+                        let inputField = $(fieldSelector);
+
+                        // If not found, try flat fields
+                        if (!inputField.length) inputField = $(`[name='${key}']`);
+
+                        // Try finding the error span (looks for .error in parent mb-4, or after input for arrays)
+                        let errorField = inputField.closest(".mb-4").find(".error").first();
+                        if (!errorField.length && inputField.next('.error').length) {
+                            errorField = inputField.next('.error');
+                        }
+
+                        inputField.addClass("border-red-500");
+                        errorField.html(Array.isArray(value) ? value[0] : value);
+                    });
+
+                    $("input, select").on("input change", function() {
+                        $(this)
+                            .removeClass("border-red-500")
+                            .closest(".mb-4")
+                            .find(".error")
+                            .html("");
+                    });
+                }
             });
         </script>
     @endpush

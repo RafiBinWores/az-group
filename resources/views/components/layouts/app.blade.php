@@ -23,8 +23,7 @@
 
 
     {{-- tom select --}}
-    <link defer href="https://cdn.jsdelivr.net/npm/tom-select@2.4.3/dist/css/tom-select.css" rel="stylesheet">
-    <script defer src="https://cdn.jsdelivr.net/npm/tom-select@2.4.3/dist/js/tom-select.complete.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/tom-select@2.4.3/dist/css/tom-select.css" rel="stylesheet">
 
     <!-- Google Font  -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -66,6 +65,9 @@
     <script src="{{ asset('assets/js/jquery-3.7.1.min.js') }}"></script>
     {{-- DataTables JS --}}
     <script defer src="{{ asset('assets/js/libs/dataTables/dataTables.min.js') }}"></script>
+
+    {{-- Tom select --}}
+    <script src="https://cdn.jsdelivr.net/npm/tom-select@2.4.3/dist/js/tom-select.complete.min.js"></script>
 
     {{-- Custom js --}}
     @stack('scripts')
