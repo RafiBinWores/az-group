@@ -17,7 +17,6 @@ return new class extends Migration
             $table->json('wash');
             $table->string('garment_type');
             $table->date('date');
-            $table->softDeletes();
             $table->timestamps();
         });
     }

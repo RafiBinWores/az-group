@@ -54,9 +54,9 @@
                 </thead>
                 @php
                     $totalSend = collect($wash->wash ?? [])->sum('send');
-                    $totalReceive = collect($wash->wash ?? [])->sum('receive');
+                    $totalReceive = collect($wash->wash ?? [])->sum('received');
                     $totalBalance = collect($wash->wash ?? [])->sum(function ($row) {
-                        return ($row['send'] ?? 0) - ($row['receive'] ?? 0);
+                        return ($row['send'] ?? 0) - ($row['received'] ?? 0);
                     });
                 @endphp
 
@@ -70,10 +70,10 @@
                                 {{ $row['send'] }}
                             </td>
                             <td class="px-6 py-4">
-                                {{ $row['receive'] }}
+                                {{ $row['received'] }}
                             </td>
                             <td class="px-6 py-4">
-                                {{ ($row['send'] ?? 0) - ($row['receive'] ?? 0) }}
+                                {{ ($row['send'] ?? 0) - ($row['received'] ?? 0) }}
 
                             </td>
                         </tr>

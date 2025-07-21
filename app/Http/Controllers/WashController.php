@@ -27,10 +27,9 @@ class WashController extends Controller
      */
     public function create()
     {
-        $orders = Order::get(['id', 'style_no']);
-        $types = GarmentType::get(['name']);
+        $orders = Order::with('garmentTypes')->latest()->get();
 
-        return view('washes.create', compact('orders', 'types'));
+        return view('washes.create', compact('orders'));
     }
 
     /**
@@ -45,7 +44,8 @@ class WashController extends Controller
             'garment_type' => 'required|string',
             'wash' => 'required|array|min:1',
             'wash.*.color' => 'required|string',
-            'wash.*.send' => 'required',
+            'wash.*.factory' => 'nullable|string',
+            'wash.*.send' => 'nullable',
             'wash.*.receive' => 'nullable',
         ], [
             'order_id.required' => 'The style no field is required.',
@@ -100,11 +100,10 @@ class WashController extends Controller
      */
     public function edit($wash)
     {
-        $wash = Wash::with('order')->findOrFail($wash);
-        $orders = Order::get(['id', 'style_no']);
-        $types = GarmentType::get(['name']);
+        $wash = Wash::findOrFail($wash);
+        $orders = Order::with(['garmentTypes'])->get();
 
-        return view('washes.edit', compact('wash', 'orders', 'types'));
+        return view('washes.edit', compact('wash', 'orders'));
     }
 
     /**
@@ -120,7 +119,8 @@ class WashController extends Controller
             'garment_type' => 'required|string',
             'wash' => 'required|array|min:1',
             'wash.*.color' => 'required|string',
-            'wash.*.send' => 'required',
+            'wash.*.factory' => 'nullable|string',
+            'wash.*.send' => 'nullable',
             'wash.*.receive' => 'nullable',
         ], [
             'order_id.required' => 'The style no field is required.',

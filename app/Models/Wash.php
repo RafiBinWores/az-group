@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Wash extends Model
 {
-    use SoftDeletes;
 
     protected $fillable = [
         'order_id',

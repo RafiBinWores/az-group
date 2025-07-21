@@ -1,84 +1,57 @@
 <x-layouts.app>
     {{-- Page title --}}
-    <x-slot name="title">Edit Embroidery or Print | AZ Group</x-slot>
-    {{-- Page title end --}}
+    <x-slot name="title">Edit Wash Report | AZ Group</x-slot>
+    <x-slot name="header">Edit Wash Report</x-slot>
 
-    {{-- Page header --}}
-    <x-slot name="header">Edit Embroidery or Print</x-slot>
-    {{-- Page header end --}}
-
-    {{-- Notifications --}}
+    {{-- Notification message --}}
     <x-notification.notification-toast />
 
-    {{-- Page Content --}}
     <div class="bg-white shadow-sm w-full rounded-lg mt-4">
         <div class="px-6 py-4 border-b border-gray-200 text-gray-700 font-semibold text-lg">
             Basic Information
         </div>
-
         <div class="p-6 font-ibm">
-            <form action="{{ route('washes.update', $wash->id) }}" method="POST">
+            <form id="form" action="{{ route('washes.update', $wash->id) }}" method="POST">
                 @csrf
                 @method('PUT')
-
                 <div class="mb-4">
                     <label class="font-semibold">Style No</label>
                     <select name="order_id" id="style-select"
                         class="w-full border mt-3 outline-[#99c041] border-gray-300 px-3 py-2 rounded-xl focus:ring-[#99c041] focus:border-[#99c041] transition">
                         <option value="" class="text-gray-300">Select a style</option>
                         @foreach ($orders as $order)
-                            <option value="{{ $order->id }}" {{ $wash->order_id == $order->id ? 'selected' : '' }}>{{ $order->style_no }}</option>
+                            <option value="{{ $order->id }}" data-colors='@json($order->color_qty)'
+                                data-garments='@json($order->garmentTypes->map->only(['id', 'name']))'
+                                {{ $order->id == $wash->order_id ? 'selected' : '' }}>
+                                {{ $order->style_no }}
+                            </option>
                         @endforeach
                     </select>
                     <span class="error text-red-500 text-xs mt-1 block"></span>
                 </div>
+
                 <div class="mb-4">
                     <label class="font-semibold">Garment Type</label>
                     <select name="garment_type" id="garment_type"
                         class="w-full border mt-3 outline-[#99c041] border-gray-300 px-3 py-2 rounded-xl focus:ring-[#99c041] focus:border-[#99c041] transition">
-                        <option value="" class="text-gray-300">Select...</option>
-                        @foreach ($types as $type)
-                            <option value="{{ $type->name }}" {{ $wash->garment_type == $type->name ? 'selected' : '' }}>{{ $type->name }}</option>
-                        @endforeach
+                        <option value="">Select...</option>
+                        {{-- Filled by JS, but also on load (see script) --}}
                     </select>
-                    <span class="error text-red-500 text-xs mt-1 block"></span>
-                </div>
-                <div class="mb-4">
-                    <label class="font-semibold">Date</label>
-                    <input type="date" name="date" value="{{ $wash->date }}" id="date" class="w-full border mt-3 outline-[#99c041] border-gray-300 px-3 py-2 rounded-xl focus:ring-[#99c041] focus:border-[#99c041] transition">
                     <span class="error text-red-500 text-xs mt-1 block"></span>
                 </div>
 
                 <div id="add-fields" class="space-y-2 mb-4">
-                    <label for="style_no" class="font-semibold">Wash Report</label>
-                    @php $index = 0; @endphp
-                    @foreach ($wash->wash as $row)
-                    <div class="mb-4">
-                        <div class="flex gap-2 items-center">
-                            <input type="text" name="wash[{{ $index }}][color]" value="{{ $row['color'] }}"
-                                placeholder="Color"
-                                class="border border-gray-300 outline-[#99c041] rounded-xl px-3 py-2 w-2/3" />
-                            <input type="number" min="0" name="wash[{{ $index }}][send]" value="{{ $row['send'] ?? null }}"
-                                placeholder="Send"
-                                class="border border-gray-300 outline-[#99c041] rounded-xl px-3 py-2 w-1/3" />
-                                <input type="number" min="0" name="wash[{{ $index }}][receive]" value="{{ $row['receive'] ?? null }}"
-                                placeholder="Receive"
-                                class="border border-gray-300 outline-[#99c041] rounded-xl px-3 py-2 w-1/3" />
-                            <button type="button"
-                                class="remove-row bg-red-500 text-white rounded-xl size-10 px-2 py-1 ml-2">
-                                &times;
-                            </button>
-                        </div>
-                        <span class="error text-red-500 text-xs mt-1 block"></span>
-                    </div>
-                    @php $index++; @endphp
-                    @endforeach
+                    <label class="font-semibold">Washes</label>
+                    <span class="error text-red-500 text-xs mt-1 block"></span>
+                    {{-- JS will fill fields --}}
                 </div>
-                <button type="button" id="add-row"
-                    class="mt-2 bg-blue-600 text-white px-4 py-2 rounded-xl shadow cursor-pointer">
-                    + Add
-                </button>
 
+                <div class="mb-4">
+                    <label class="font-semibold">Date</label>
+                    <input type="date" name="date" id="date" value="{{ old('date', $wash->date) }}"
+                        class="w-full border mt-3 outline-[#99c041] border-gray-300 px-3 py-2 rounded-xl focus:ring-[#99c041] focus:border-[#99c041] transition">
+                    <span class="error text-red-500 text-xs mt-1 block"></span>
+                </div>
                 <!-- Buttons -->
                 <div class="flex items-center gap-4 mt-5">
                     <a href="{{ route('washes.index') }}"
@@ -91,56 +64,93 @@
                     </button>
                 </div>
             </form>
-
         </div>
-
     </div>
 
     @push('scripts')
         <script>
-           let washIndex = {{ count($wash->wash) }};
-
-            document.getElementById('add-row').addEventListener('click', function() {
-                const fields = document.getElementById('add-fields');
-                const div = document.createElement('div');
-                div.className = 'flex gap-2 items-center';
-
-                div.innerHTML = `
-        <input type="text" name="wash[${washIndex}][color]" placeholder="Color"
-            class="border border-gray-300 outline-[#99c041] rounded-xl px-3 py-2 w-2/3" />
-        <input type="number" min="0" name="wash[${washIndex}][send]" placeholder="Send"
-            class="border border-gray-300 outline-[#99c041] rounded-xl px-3 py-2 w-1/3" />
-        <input type="number" min="0" name="wash[${washIndex}][receive]" placeholder="Receive"
-            class="border border-gray-300 outline-[#99c041] rounded-xl px-3 py-2 w-1/3" />
-        <button type="button" class="remove-row bg-red-500 text-white rounded-xl px-2 py-1 ml-2 size-10 cursor-pointer">
-            &times;
-        </button>
-    `;
-                fields.appendChild(div);
-                washIndex++;
-                updateRemoveButtons();
-            });
-
-            document.getElementById('add-fields').addEventListener('click', function(e) {
-                if (e.target.classList.contains('remove-row')) {
-                    e.target.parentNode.remove();
-                    updateRemoveButtons();
+            new TomSelect("#style-select", {
+                create: true,
+                sortField: {
+                    field: "text",
+                    direction: "desc"
                 }
             });
 
-            function updateRemoveButtons() {
-                const rows = document.querySelectorAll('#add-fields .flex');
-                rows.forEach((row, idx) => {
-                    const btn = row.querySelector('.remove-row');
-                    btn.classList.toggle('hidden', rows.length === 1);
+            // Helper to fill garment types on page load or style change
+            function populateGarmentTypes(orderGarments, selectedGarment) {
+                let garmentSelect = document.getElementById('garment_type');
+                garmentSelect.innerHTML = '<option value="">Select...</option>';
+                (orderGarments || []).forEach(type => {
+                    garmentSelect.innerHTML +=
+                        `<option value="${type.name}" ${type.name === selectedGarment ? 'selected' : ''}>${type.name}</option>`;
+                });
+            }
+            // Helper to fill cutting fields for edit
+            function populateWashFields(colorQty, washRows) {
+                const fieldsDiv = document.getElementById('add-fields');
+                fieldsDiv.innerHTML = `<label class="font-semibold">Washes</label>
+                <span class="error text-red-500 text-xs mt-1 block"></span>`;
+                (colorQty || []).forEach((row, idx) => {
+                    // Try to find matching entry in washRows
+                    let matching = (washRows || []).find(
+                        cr => cr.color === row.color
+                    );
+                    fieldsDiv.insertBefore(
+                        (() => {
+                            const div = document.createElement('div');
+                            div.className = 'flex gap-2 items-center mt-2';
+                            div.innerHTML = `
+                            <input type="text" readonly value="${row.color}" class="border border-gray-300 rounded-xl px-3 py-2 w-2/6 bg-gray-100" name="wash[${idx}][color]">
+                            <input type="number" readonly min="0" placeholder="Order Qty" value="${row.order_qty ?? (matching ? matching.order_qty : '')}" class="border border-gray-300 bg-gray-100 rounded-xl px-3 py-2 w-1/6" name="wash[${idx}][order_qty]">
+                            <input type="text" min="0" placeholder="Factory" class="border border-gray-300 rounded-xl px-3 py-2 w-2/6" name="wash[${idx}][factory]" value="${matching ? matching.factory : ''}">
+                            <input type="number" min="0" placeholder="Send" class="border border-gray-300 rounded-xl px-3 py-2 w-1/6" name="wash[${idx}][send]" value="${matching ? matching.send : ''}">
+                            <input type="number" min="0" placeholder="Received" class="border border-gray-300 rounded-xl px-3 py-2 w-1/6" name="wash[${idx}][received]" value="${matching ? matching.received : ''}">
+                `;
+                            return div;
+                        })(),
+                        fieldsDiv.querySelector('.error')
+                    );
                 });
             }
 
-            // Initialize on page load
-            updateRemoveButtons();
+            // On page load, set initial fields
+            document.addEventListener('DOMContentLoaded', function() {
+                let styleSelect = document.getElementById('style-select');
+                let selectedOption = styleSelect.options[styleSelect.selectedIndex];
+                let orderGarments = [];
+                let colorQty = [];
+                try {
+                    orderGarments = JSON.parse(selectedOption.getAttribute('data-garments') || '[]');
+                    colorQty = JSON.parse(selectedOption.getAttribute('data-colors') || '[]');
+                } catch (e) {}
+                let selectedGarment = @json($wash->garment_type ?? '');
+                let washRows = @json($wash->wash ?? []);
 
-            // Handle AJAX form submit for update
-           $(function() {
+                // Fill garment type options and select
+                populateGarmentTypes(orderGarments, selectedGarment);
+
+                // Fill color/cutting fields (using current cutting data)
+                populateWashFields(colorQty, washRows);
+            });
+
+            // On style no change, update fields
+            document.getElementById('style-select').addEventListener('change', function() {
+                let selected = this.options[this.selectedIndex];
+                let garments = [];
+                let colors = [];
+                try {
+                    garments = JSON.parse(selected.getAttribute('data-garments'));
+                } catch (e) {}
+                try {
+                    colors = JSON.parse(selected.getAttribute('data-colors'));
+                } catch (e) {}
+                populateGarmentTypes(garments, '');
+                populateCuttingFields(colors, []);
+            });
+
+            // Form submit via AJAX (same as before)
+             $(function() {
                 $("form").on("submit", function(event) {
                     event.preventDefault();
                     let form = $(this);
@@ -162,10 +172,8 @@
                             if (response.status) {
                                 showToast(
                                     "success",
-                                    response.message || "Cutting report updated successfully"
+                                    response.message || "Wash report updated successfully"
                                 );
-                                // Optionally redirect after success:
-                                // setTimeout(function() { window.location.href = "{{ route('users.index') }}"; }, 1200);
                             } else {
                                 if (response.message) {
                                     showToast("warning", response.message);

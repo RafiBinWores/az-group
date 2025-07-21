@@ -31,7 +31,7 @@
                     @foreach ($washes as $wash)
                         @php
                             $totalSend = collect($wash->wash ?? [])->sum('send');
-                            $totalReceive = collect($wash->wash ?? [])->sum('receive');
+                            $totalReceive = collect($wash->wash ?? [])->sum('received');
 
                         @endphp
                         <tr class="border-b-gray-400" data-order-id="{{ $wash->id }}">
@@ -71,6 +71,11 @@
             $(document).ready(function() {
                 let table = $("#table").DataTable({
                     responsive: true,
+                    order: [
+                        [0, "desc"]
+                    ],
+                    scrollY: 'calc(100vh - 330px)',
+                    scrollCollapse: true,
                     scrollX: true,
                     language: {
                         search: "_INPUT_",
