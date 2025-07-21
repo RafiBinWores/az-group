@@ -18,13 +18,12 @@
                 @csrf
                 <div class="mb-4">
                     <label class="font-semibold">Style No</label>
-                    <select name="order_id" id="style-select"
+                    <select name="order_id" id="style-select" placeholder="Select a style..." autocomplete="off"
                         class="w-full border mt-3 outline-[#99c041] border-gray-300 px-3 py-2 rounded-xl focus:ring-[#99c041] focus:border-[#99c041] transition">
-                        <option value="" class="text-gray-300">Select a style</option>
+                        <option value="" class="text-gray-300">Select a style...</option>
                         @foreach ($orders as $order)
-                            <option value="{{ $order->id }}"
-                                data-colors='@json($order->color_qty)'
-                                data-garments='@json($order->garmentTypes->map->only("id","name"))'>
+                            <option value="{{ $order->id }}" data-colors='@json($order->color_qty)'
+                                data-garments='@json($order->garmentTypes->map->only('id', 'name'))'>
                                 {{ $order->style_no }}
                             </option>
                         @endforeach
@@ -69,6 +68,15 @@
 
     @push('scripts')
         <script>
+            new TomSelect("#style-select", {
+                create: true,
+                sortField: {
+                    field: "text",
+                    direction: "desc"
+                }
+            });
+
+
             // Dynamically update garment types and color fields
             document.getElementById('style-select').addEventListener('change', function() {
                 // Garment Types
@@ -77,7 +85,11 @@
                 let selected = this.options[this.selectedIndex];
                 let garments = selected.getAttribute('data-garments');
                 if (garments) {
-                    try { garments = JSON.parse(garments); } catch (e) { garments = []; }
+                    try {
+                        garments = JSON.parse(garments);
+                    } catch (e) {
+                        garments = [];
+                    }
                     garments.forEach(type => {
                         garmentSelect.innerHTML += `<option value="${type.name}">${type.name}</option>`;
                     });
@@ -89,7 +101,11 @@
                     <span class="error text-red-500 text-xs mt-1 block"></span>`;
                 let colors = selected.getAttribute('data-colors');
                 if (colors) {
-                    try { colors = JSON.parse(colors); } catch (e) { colors = []; }
+                    try {
+                        colors = JSON.parse(colors);
+                    } catch (e) {
+                        colors = [];
+                    }
                     colors.forEach((row, idx) => {
                         const div = document.createElement('div');
                         div.className = 'flex gap-2 items-center mt-2';

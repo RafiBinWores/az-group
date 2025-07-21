@@ -71,6 +71,11 @@
             $(document).ready(function() {
                 let table = $("#table").DataTable({
                     responsive: true,
+                    order: [
+                        [0, "desc"]
+                    ],
+                    scrollY: 'calc(100vh - 330px)', 
+                    scrollCollapse: true,
                     scrollX: true,
                     language: {
                         search: "_INPUT_",

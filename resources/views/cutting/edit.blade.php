@@ -3,6 +3,7 @@
     <x-slot name="title">Edit Cutting | AZ Group</x-slot>
     <x-slot name="header">Edit Cutting</x-slot>
 
+    {{-- Notifications --}}
     <x-notification.notification-toast />
 
     <div class="bg-white shadow-sm w-full rounded-lg mt-4">
@@ -68,6 +69,14 @@
 
     @push('scripts')
         <script>
+            new TomSelect("#style-select", {
+                create: true,
+                sortField: {
+                    field: "text",
+                    direction: "desc"
+                }
+            });
+
             // Helper to fill garment types on page load or style change
             function populateGarmentTypes(orderGarments, selectedGarment) {
                 let garmentSelect = document.getElementById('garment_type');

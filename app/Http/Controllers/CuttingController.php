@@ -27,7 +27,7 @@ class CuttingController extends Controller
      */
     public function create()
     {
-        $orders = Order::with('garmentTypes')->get();
+        $orders = Order::with('garmentTypes')->latest()->get();
 
         return view('cutting.create', compact('orders'));
     }
@@ -98,7 +98,7 @@ class CuttingController extends Controller
     public function edit($cutting)
     {
         $cutting = Cutting::findOrFail($cutting);
-        $orders = Order::with(['garmentTypes'])->get();
+        $orders = Order::with(['garmentTypes'])->latest()->get();
         
         return view('cutting.edit', compact('cutting', 'orders'));
     }
