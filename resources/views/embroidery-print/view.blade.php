@@ -74,7 +74,7 @@
                     order: [
                         [0, "desc"]
                     ],
-                    scrollY: 'calc(100vh - 330px)', 
+                    scrollY: 'calc(100vh - 350px)', 
                     scrollCollapse: true,
                     scrollX: true,
                     language: {
